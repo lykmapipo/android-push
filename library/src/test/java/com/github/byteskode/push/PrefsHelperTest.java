@@ -1,6 +1,7 @@
 package com.github.byteskode.push;
 
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -21,10 +22,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(RobolectricTestRunner.class)
 public class PrefsHelperTest {
 	private Context context;
+	private String token = "5nDAHYWK3u521381n112";
 
 	@Before
 	public void setup(){
 		context = ShadowApplication.getInstance().getApplicationContext();
+		PrefsHelper.removeFCMToken(context);
 	}
 
 
@@ -33,4 +36,17 @@ public class PrefsHelperTest {
     	boolean hasFCMToken = PrefsHelper.hasFCMToken(context);
         assertThat(hasFCMToken, equalTo(false));
     }
+
+    @Test
+    public void shouldSaveFCMToken() {
+    	PrefsHelper.saveFCMToken(context, token);
+    	String fcmToken = PrefsHelper.getFCMToken(context);
+        assertThat(fcmToken, equalTo(token));
+    }
+
+    @After
+	public void cleanup(){
+		PrefsHelper.removeFCMToken(context);
+		context = null;
+	}
 }
