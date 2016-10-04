@@ -11,7 +11,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author lally elias
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
- * @date 8/10/16
  */
 
 @RunWith(RobolectricTestRunner.class)
