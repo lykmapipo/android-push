@@ -2,6 +2,9 @@ package com.github.byteskode.push;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 
 /**
@@ -27,6 +30,11 @@ public class Push {
     private static Push instance = null;
 
     /**
+     * shared preference instance
+     */
+    private static SharedPreferences preferences;
+
+    /**
      * holding context
      */
     private Context mContext;
@@ -50,14 +58,27 @@ public class Push {
      */
     public static Push getInstance(Context context) {
         if (instance == null) {
+
+            //instantiate push
             instance = new Push(context);
+
+            //obtain preference manager
+            preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+
         }
+
         return instance;
+
     }
 
-    public void getInstanceId() {
-//        new GoogleApiClient();
-//        String iid = InstanceID.getInstance(this.mContext).getId();
+
+    /**
+     * Compute installation unique instance id
+     * @return instanceId
+     */
+    public String getInstanceId() {
+        String instanceId = FirebaseInstanceId.getInstance().getId();
+        return instanceId;
     }
 
 }

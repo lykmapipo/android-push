@@ -2,7 +2,8 @@ package com.github.byteskode.push.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.github.byteskode.push.R;
+import android.util.Log;
+import com.github.byteskode.push.Push;
 
 
 public class MainActivity extends Activity {
@@ -11,6 +12,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.d(MainActivity.class.getSimpleName(), Push.getInstance(this).getInstanceId());
+
     }
 
     @Override
