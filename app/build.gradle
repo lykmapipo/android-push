@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-     compileSdkVersion 21
+    compileSdkVersion 21
     buildToolsVersion "22.0.1"
 
     defaultConfig {
@@ -10,7 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,6 +21,7 @@ android {
 
 dependencies {
     compile project(':library')
+    compile 'com.google.firebase:firebase-messaging:9.6.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

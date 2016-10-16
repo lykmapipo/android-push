@@ -13,7 +13,7 @@ import java.util.UUID;
  * 
  * Encapsulate behaviour based on {@link android.content.SharedPreferences}
  * 
- * @author lally elias
+ * @author lally elias(lykmapipo), byteskode Team & Contibutors
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
  */
 public class PrefsHelper {

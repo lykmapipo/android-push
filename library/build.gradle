@@ -19,13 +19,13 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "com.android.support:support-v4:${APPCOMPAT_VERSION}"
     compile "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
     compile "com.google.android.gms:play-services-base:${FCM_VERSION}"
     compile "com.google.firebase:firebase-messaging:${FCM_VERSION}"
     compile "com.github.onehilltech:android-metadata:${ANDROID_METADATA_VERSION}"
     compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
-
 
     //test dependencies
     testCompile "junit:junit:${JUNIT_VERSION}"
