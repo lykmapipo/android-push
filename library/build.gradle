@@ -4,12 +4,12 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.byteskode'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 24
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         consumerProguardFiles 'proguard-rules.pro'
@@ -19,11 +19,13 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:support-v4:${APPCOMPAT_VERSION}"
+//    compile "com.android.support:support-v4:${APPCOMPAT_VERSION}"
     compile "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
-    compile "com.google.android.gms:play-services-base:${FCM_VERSION}"
+//    compile "com.google.android.gms:play-services-base:${FCM_VERSION}"
+//    compile "com.google.android.gms:play-services-identity:${FCM_VERSION}"
+//    compile "com.google.android.gms:play-services-appindexing:${FCM_VERSION}"
     compile "com.google.firebase:firebase-messaging:${FCM_VERSION}"
-    compile "com.github.onehilltech:android-metadata:${ANDROID_METADATA_VERSION}"
+//    compile "com.github.onehilltech:android-metadata:${ANDROID_METADATA_VERSION}"
     compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
 

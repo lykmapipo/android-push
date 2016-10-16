@@ -8,40 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:733216899870:android:6218845ed2a19be0",
+        "mobilesdk_app_id": "1:733216899870:android:66acdd6497d99adb",
         "android_client_info": {
-          "package_name": "com.byteskode.byteskode"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "733216899870-fojtoldjnlc4m858a5hf2ttes4jnkfgo.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyC_baAkTTya8FNBZguUg1ua5dX5k53Hl9c"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:733216899870:android:19a55ab6784205d5",
-        "android_client_info": {
-          "package_name": "com.github.byteskode.push"
+          "package_name": "com.github.byteskode.push.sample"
         }
       },
       "oauth_client": [
