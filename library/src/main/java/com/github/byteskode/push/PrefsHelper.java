@@ -1,8 +1,11 @@
 package com.github.byteskode.push;
 
 import android.content.Context;
+import android.provider.Settings.Secure;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import java.util.UUID;
 
 
 /**
@@ -24,6 +27,12 @@ public class PrefsHelper {
      */
     private PrefsHelper() {
 
+    }
+
+
+    public static String getInstallationId(Context context){
+        String uuid = UUID.randomUUID().toString();
+        return uuid;
     }
 
 

@@ -41,6 +41,7 @@ public class PrefsHelperTest {
     public void shouldSaveFCMToken() {
     	PrefsHelper.saveFCMToken(context, token);
     	String fcmToken = PrefsHelper.getFCMToken(context);
+    	System.out.print(PrefsHelper.getInstallationId(context));
         assertThat(fcmToken, equalTo(token));
     }
 
