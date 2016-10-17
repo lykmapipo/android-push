@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 
 
 /**
@@ -56,7 +58,7 @@ public class Push {
      * @param context
      * @return {@link com.github.byteskode.push.Push}
      */
-    public static Push getInstance(Context context) {
+    public static synchronized Push getInstance(Context context) {
         if (instance == null) {
 
             //instantiate push
@@ -77,7 +79,7 @@ public class Push {
      * @param context
      * @return {@link com.github.byteskode.push.Push}
      */
-    public static Push init(Context context) {
+    public static synchronized Push init(Context context) {
         return getInstance(context);
     }
 
@@ -92,7 +94,35 @@ public class Push {
         return instanceId;
     }
 
-    //TODO add abilty to subscribe to a topic
-    //TODO add ability to unsubscribe from topic
+    /**
+     * Subscribe to a given push topic
+     *
+     * @param topic
+     * @see {@link com.google.firebase.messaging.FirebaseMessaging}
+     */
+    public void subscribe(String topic) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic);
+    }
+
+    /**
+     * Unsubscribe from a given push topic
+     *
+     * @param topic
+     * @see {@link com.google.firebase.messaging.FirebaseMessaging}
+     */
+    public void unsubscribe(String topic) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
+    }
+
+    /**
+     * Send push message
+     *
+     * @param message
+     * @see {@link com.google.firebase.messaging.RemoteMessage}
+     * @see {@link com.google.firebase.messaging.FirebaseMessaging}
+     */
+    public void send(RemoteMessage message) {
+        FirebaseMessaging.getInstance().send(message);
+    }
 
 }
