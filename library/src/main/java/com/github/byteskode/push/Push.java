@@ -8,7 +8,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 
 /**
- * Singleton to manage push notifitication
+ * Singleton to manage push notification
  *
  * @author lally elias(lykmapipo), byteskode Team & Contibutors
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
@@ -54,7 +54,7 @@ public class Push {
      * Singleton instance method
      *
      * @param context
-     * @return
+     * @return {@link com.github.byteskode.push.Push}
      */
     public static Push getInstance(Context context) {
         if (instance == null) {
@@ -71,14 +71,28 @@ public class Push {
 
     }
 
+    /**
+     * Initialize push
+     *
+     * @param context
+     * @return {@link com.github.byteskode.push.Push}
+     */
+    public static Push init(Context context) {
+        return getInstance(context);
+    }
+
 
     /**
      * Compute installation unique instance id
+     *
      * @return instanceId
      */
     public String getInstanceId() {
         String instanceId = FirebaseInstanceId.getInstance().getId();
         return instanceId;
     }
+
+    //TODO add abilty to subscribe to a topic
+    //TODO add ability to unsubscribe from topic
 
 }
