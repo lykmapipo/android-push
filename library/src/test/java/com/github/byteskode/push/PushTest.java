@@ -51,6 +51,8 @@ public class PushTest {
     @Test
     public void shouldBeAbleToGetDeviceRegistrationToken() {
         Push push = Push.getInstance(context);
+        push.saveRegistrationToken(registrationToken);
+
         String token = push.getRegistrationToken();
         assertThat(token, equalTo(registrationToken));
     }
@@ -63,9 +65,24 @@ public class PushTest {
     }
 
     @Test
+    public void shouldBeAbleToObtainSubscribedPushTopics() {
+        String topic = "MAIZE";
+
+        Push  push = Push.getInstance(context);
+        push.subscribe(topic);
+
+        Set<String> topics = push.getTopics();
+        assertThat(topics.contains(topic), equalTo(true));
+    }
+
+    @Test
     public void shouldBeAbleToUnSubscribeToPushTopic() {
         String topic = "MAIZE";
-        Set<String> topics = Push.getInstance(context).unsubscribe(topic);
+
+        Push  push = Push.getInstance(context);
+        push.subscribe(topic);
+
+        Set<String> topics = push.unsubscribe(topic);
         assertThat(topics.contains(topic), equalTo(false));
     }
 
