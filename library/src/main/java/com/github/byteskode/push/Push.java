@@ -8,9 +8,12 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
- * Singleton to manage push notification
+ * simplified push notification for android application
  *
  * @author lally elias(lykmapipo), byteskode Team & Contibutors
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
@@ -27,6 +30,11 @@ public class Push {
     public static final String INSTANCE_ID_PREF_KEY = "instanceId";
 
     /**
+     * key used to store application subscribed push topics
+     */
+    public static final String TOPICS_PREF_KEY = "topics";
+
+    /**
      * class instance
      */
     private static Push instance = null;
@@ -34,21 +42,25 @@ public class Push {
     /**
      * shared preference instance
      */
-    private static SharedPreferences preferences;
+    private SharedPreferences preferences;
+
+    /**
+     * set of application subscribed push topics
+     */
+    private Set<String> topics = new HashSet<String>();
 
     /**
      * holding context
      */
-    private Context mContext;
+    private Context context;
 
     /**
      * Private constructor
      *
-     * @param mContext
+     * @param context
      */
-    private Push(Context mContext) {
-        this.mContext = mContext;
-//		init();
+    private Push(Context context) {
+        this.context = context;
     }
 
 
@@ -64,23 +76,26 @@ public class Push {
             //instantiate push
             instance = new Push(context);
 
-            //obtain preference manager
-            preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-
+            //initialize push
+            instance.init();
         }
 
         return instance;
 
     }
 
+
     /**
-     * Initialize push
-     *
-     * @param context
-     * @return {@link com.github.byteskode.push.Push}
+     * initialize push internal
      */
-    public static synchronized Push init(Context context) {
-        return getInstance(context);
+    private void init() {
+
+        //obtain preference manager
+        preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+
+        //load existing topics
+        this.topics = preferences.getStringSet(TOPICS_PREF_KEY, this.topics);
+
     }
 
 
@@ -100,8 +115,26 @@ public class Push {
      * @param topic
      * @see {@link com.google.firebase.messaging.FirebaseMessaging}
      */
-    public void subscribe(String topic) {
-        FirebaseMessaging.getInstance().subscribeToTopic(topic);
+    public Set<String> subscribe(String topic) {
+        try {
+            //add topic to application push topics
+            if (topic != null && !topic.isEmpty()) {
+                topics.add(topic);
+            }
+
+            // persist application push topics
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putStringSet(TOPICS_PREF_KEY, topics);
+            editor.commit();
+
+            //subscribe application to firebase push topic
+            FirebaseMessaging.getInstance().subscribeToTopic(topic);
+
+            return topics;
+
+        } catch (Exception e) {
+            return topics;
+        }
     }
 
     /**
@@ -110,8 +143,24 @@ public class Push {
      * @param topic
      * @see {@link com.google.firebase.messaging.FirebaseMessaging}
      */
-    public void unsubscribe(String topic) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
+    public Set<String> unsubscribe(String topic) {
+        try {
+            if (topic != null & !topic.isEmpty()) {
+                topics.remove(topic);
+            }
+
+            //persist application push topics
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putStringSet(TOPICS_PREF_KEY, topics);
+            editor.commit();
+
+            //un subscribe application from firebase push topic
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
+
+            return topics;
+        } catch (Exception e) {
+            return topics;
+        }
     }
 
     /**
@@ -123,6 +172,28 @@ public class Push {
      */
     public void send(RemoteMessage message) {
         FirebaseMessaging.getInstance().send(message);
+    }
+
+    /**
+     * obtain list of push topic an application subscribe on
+     * @return topics
+     */
+    public Set<String> getTopics() {
+        Set<String> topics = preferences.getStringSet(TOPICS_PREF_KEY, this.topics);
+        return topics;
+    }
+
+    public void clear() {
+        //clear in memory topics
+        topics.clear();
+
+        //clear all push preferences
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(REGISTRATION_ID_PREF_KEY);
+        editor.remove(INSTANCE_ID_PREF_KEY);
+        editor.remove(TOPICS_PREF_KEY);
+        editor.commit();
+
     }
 
 }

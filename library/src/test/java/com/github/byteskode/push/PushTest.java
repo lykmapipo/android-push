@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowApplication;
 
+import java.util.Set;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -36,12 +38,25 @@ public class PushTest {
 
     @Test
     public void shouldBeAbleToGetInstanceId() {
-//        String instanceId = Push.getInstance(context).getInstanceId();
-//        assertThat(instanceId, is(not(equalTo(null))));
+    }
+
+    @Test
+    public void shouldBeAbleToSubscribeToPushTopic() {
+        String topic = "MAIZE";
+        Set<String> topics = Push.getInstance(context).subscribe(topic);
+        assertThat(topics.contains(topic), equalTo(true));
+    }
+
+    @Test
+    public void shouldBeAbleToUnSubscribeToPushTopic() {
+        String topic = "MAIZE";
+        Set<String> topics = Push.getInstance(context).unsubscribe(topic);
+        assertThat(topics.contains(topic), equalTo(false));
     }
 
     @After
     public void cleanup() {
+        Push.getInstance(context).clear();
         context = null;
     }
 }
