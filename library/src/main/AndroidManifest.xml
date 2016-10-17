@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest 
-    xmlns:android="http://schemas.android.com/apk/res/android" 
-    package="com.github.byteskode.push">
+<manifest
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.github.byteskode.push">
 
     <application
             android:allowBackup="true"
             android:label="@string/app_name">
+
+        <!-- start push service -->
+        <service
+                android:name=".service.PushMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <!-- end push service -->
+
     </application>
 
 </manifest>

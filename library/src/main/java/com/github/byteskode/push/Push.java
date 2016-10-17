@@ -176,6 +176,7 @@ public class Push {
      * @see {@link com.google.firebase.messaging.FirebaseMessaging}
      */
     public void send(RemoteMessage message) {
+        //TODO implement sent and error callback
         FirebaseMessaging.getInstance().send(message);
     }
 
@@ -216,6 +217,10 @@ public class Push {
     public String getRegistrationToken() {
         String token = preferences.getString(REGISTRATION_TOKEN_PREF_KEY, registrationToken);
         return token;
+    }
+
+    public void onPushNotification(RemoteMessage message){
+
     }
 
     public void clear() {
