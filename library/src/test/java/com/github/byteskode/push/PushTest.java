@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class PushTest {
     private Context context;
     private String registrationToken = "XtSVEtyw023iTy";
-    private String apiUrl="https://www.example.com/devices";
+    private String apiBaseUrl ="https://www.example.com/";
 
     @Before
     public void setup() {
@@ -88,23 +88,23 @@ public class PushTest {
     }
 
     @Test
-    public void shouldBeAbleToSetApiUrl() {
+    public void shouldBeAbleToSetApiBaseUrl() {
 
         Push  push = Push.getInstance(context);
-        String apiUrl = push.setApiUrl(this.apiUrl);
+        String apiUrl = push.setApiUrl(this.apiBaseUrl);
 
-        assertThat(apiUrl, equalTo(this.apiUrl));
+        assertThat(apiUrl, equalTo(this.apiBaseUrl));
     }
 
     @Test
-    public void shouldBeAbleToGetApiUrl() {
+    public void shouldBeAbleToGetApiBaseUrl() {
 
         Push  push = Push.getInstance(context);
-        push.setApiUrl(this.apiUrl);
+        push.setApiUrl(this.apiBaseUrl);
 
-        String apiUrl = push.getApiUrl();
+        String apiUrl = push.getApiBaseUrl();
 
-        assertThat(apiUrl, equalTo(this.apiUrl));
+        assertThat(apiUrl, equalTo(this.apiBaseUrl));
     }
 
     @After

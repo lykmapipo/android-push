@@ -3,7 +3,9 @@ package com.github.byteskode.push.services;
 import android.app.IntentService;
 import android.content.Intent;
 import com.github.byteskode.push.Push;
+import com.github.byteskode.push.api.Device;
 import com.google.firebase.iid.FirebaseInstanceId;
+import retrofit2.Response;
 
 /**
  * receive new registration token, save it in shared preference and send to api server
@@ -13,6 +15,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
  * @date 10/17/16
  */
 public class RegistrationTokenService extends IntentService {
+    //TODO add logs
     private static final String TAG = RegistrationTokenService.class.getSimpleName();
 
     /**
@@ -37,10 +40,25 @@ public class RegistrationTokenService extends IntentService {
             //check if token are different for updates
             boolean shouldUpdateServerToken = !currentRegistrationToken.equals(latestRegistrationToken);
 
+
             if (shouldUpdateServerToken) {
-                //TODO update shared preference registration token
-                //TODO update remove server registration token
-                //TODO notify new token
+                //save or update current device registration token
+                push.saveRegistrationToken(latestRegistrationToken);
+
+                //prepare device push details
+                Device device = new Device(push.getInstanceId(), latestRegistrationToken, push.getTopics());
+
+                if (currentRegistrationToken.equals(null)) {
+                    //post device details
+                    Response<Device> response = push.getDeviceApi().create(device).execute();
+                    //TODO handle error and success response
+                    //TODO notify on new token
+                } else {
+                    //put device details
+                    Response<Device> response = push.getDeviceApi().update(device).execute();
+                    //TODO handle error and success response
+                    //TODO notify new token
+                }
             }
 
         } catch (Exception e) {

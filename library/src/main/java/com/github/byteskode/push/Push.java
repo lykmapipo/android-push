@@ -4,9 +4,11 @@ package com.github.byteskode.push;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import com.github.byteskode.push.api.DeviceApi;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
+import retrofit2.Retrofit;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,7 +39,7 @@ public class Push {
     /**
      * key used to store api server end point to post and update device push details
      */
-    public static final String API_URL_PREF_KEY = "apiUrl";
+    public static final String API_BASE_URL_PREF_KEY = "apiBaseUrl";
 
     /**
      * class instance
@@ -62,7 +64,12 @@ public class Push {
     /**
      * server api endpoint to post and update device push details
      */
-    private String apiUrl;
+    private String apiBaseUrl;
+
+    /**
+     * device api used to sync device push details to remove server
+     */
+    private DeviceApi deviceApi;
 
     /**
      * holding context
@@ -114,6 +121,21 @@ public class Push {
     }
 
     /**
+     * initialize device api server
+     */
+    private void initDeviceApi() {
+        if (deviceApi == null && apiBaseUrl != null && !apiBaseUrl.isEmpty()) {
+            Retrofit retrofit = new Retrofit.Builder().baseUrl(this.apiBaseUrl).build();
+            deviceApi = retrofit.create(DeviceApi.class);
+        }
+    }
+
+    public DeviceApi getDeviceApi(){
+        //TODO ensure it initialized
+        return deviceApi;
+    }
+
+    /**
      * save server api endpoint to post and update device push details
      *
      * @param apiUrl
@@ -122,13 +144,16 @@ public class Push {
     public String setApiUrl(String apiUrl) {
         //save api url to shared preference
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(API_URL_PREF_KEY, apiUrl);
+        editor.putString(API_BASE_URL_PREF_KEY, apiUrl);
         editor.apply();
 
-        //update in memory apiUrl
-        this.apiUrl = apiUrl;
+        //update in memory apiBaseUrl
+        this.apiBaseUrl = apiUrl;
 
-        return this.apiUrl;
+        //init device api
+//        initDeviceApi();
+
+        return this.apiBaseUrl;
     }
 
     /**
@@ -136,8 +161,8 @@ public class Push {
      *
      * @return
      */
-    public String getApiUrl() {
-        String apiUrl = preferences.getString(API_URL_PREF_KEY, this.apiUrl);
+    public String getApiBaseUrl() {
+        String apiUrl = preferences.getString(API_BASE_URL_PREF_KEY, this.apiBaseUrl);
         return apiUrl;
     }
 
@@ -270,6 +295,7 @@ public class Push {
         editor.remove(REGISTRATION_TOKEN_PREF_KEY);
         editor.remove(INSTANCE_ID_PREF_KEY);
         editor.remove(TOPICS_PREF_KEY);
+        editor.remove(API_BASE_URL_PREF_KEY);
         editor.apply();
 
     }
