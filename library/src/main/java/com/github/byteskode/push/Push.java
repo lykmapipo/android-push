@@ -130,10 +130,11 @@ public class Push {
         }
     }
 
-    public DeviceApi getDeviceApi(){
+    public DeviceApi getDeviceApi() {
         //TODO ensure it initialized
         return deviceApi;
     }
+
 
     /**
      * save server api endpoint to post and update device push details

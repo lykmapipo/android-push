@@ -48,17 +48,24 @@ public class RegistrationTokenService extends IntentService {
                 //prepare device push details
                 Device device = new Device(push.getInstanceId(), latestRegistrationToken, push.getTopics());
 
+                Response<Device> response;
+
+                //post device details
                 if (currentRegistrationToken.equals(null)) {
-                    //post device details
-                    Response<Device> response = push.getDeviceApi().create(device).execute();
-                    //TODO handle error and success response
-                    //TODO notify on new token
-                } else {
-                    //put device details
-                    Response<Device> response = push.getDeviceApi().update(device).execute();
-                    //TODO handle error and success response
-                    //TODO notify new token
+                    response = push.getDeviceApi().create(device).execute();
                 }
+                //put device details
+                else {
+                    response = push.getDeviceApi().update(device).execute();
+                }
+
+                if (response.isSuccessful()) {
+                    //TODO handle success and notify new token
+                } else {
+                    //TODO handle failure and notify new token
+                }
+
+                //TODO in case of network failure schedule retries or use wake and boot events
             }
 
         } catch (Exception e) {
