@@ -7,23 +7,23 @@
             android:allowBackup="true"
             android:label="@string/app_name">
 
-        <!-- start push message receiver service -->
+        <!-- start push message receiver service to listen for message events-->
         <service
                 android:name=".services.PushMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <!-- end push message receiver service -->
+        <!-- end push message receiver service to listen for message events-->
 
-        <!-- start push registration token manager service -->
+        <!-- start push registration token manager service to listen for instance id events-->
         <service
                 android:name=".services.PushInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
-        <!-- end push registration token manager service -->
+        <!-- end push registration token manager service to listen for instance id events -->
 
         <!-- start registration token service-->
         <service android:name=".services.RegistrationTokenService" android:exported="false"/>
