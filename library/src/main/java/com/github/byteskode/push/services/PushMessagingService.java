@@ -1,11 +1,11 @@
-package com.github.byteskode.push.service;
+package com.github.byteskode.push.services;
 
 import com.github.byteskode.push.Push;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 /**
- * receive  and handover push notification message to push
+ * receive and handover push notification message to push
  *
  * @author lally elias
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
@@ -15,7 +15,7 @@ public class PushMessagingService extends FirebaseMessagingService {
 
     /**
      * handle received push notification message
-     *
+     * @see {@link https://firebase.google.com/docs/cloud-messaging/android/receive}
      * @param message
      */
     @Override
