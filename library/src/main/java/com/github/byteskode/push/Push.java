@@ -35,6 +35,11 @@ public class Push {
     public static final String TOPICS_PREF_KEY = "topics";
 
     /**
+     * key used to store api server end point to post and update device push details
+     */
+    public static final String API_URL_PREF_KEY = "apiUrl";
+
+    /**
      * class instance
      */
     private static Push instance = null;
@@ -53,6 +58,11 @@ public class Push {
      * latest push registration token
      */
     private String registrationToken;
+
+    /**
+     * server api endpoint to post and update device push details
+     */
+    private String apiUrl;
 
     /**
      * holding context
@@ -101,6 +111,34 @@ public class Push {
         //load existing topics
         this.topics = preferences.getStringSet(TOPICS_PREF_KEY, this.topics);
 
+    }
+
+    /**
+     * save server api endpoint to post and update device push details
+     *
+     * @param apiUrl
+     * @return
+     */
+    public String setApiUrl(String apiUrl) {
+        //save api url to shared preference
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(API_URL_PREF_KEY, apiUrl);
+        editor.apply();
+
+        //update in memory apiUrl
+        this.apiUrl = apiUrl;
+
+        return this.apiUrl;
+    }
+
+    /**
+     * get server api endpoint to post and update device push details
+     *
+     * @return
+     */
+    public String getApiUrl() {
+        String apiUrl = preferences.getString(API_URL_PREF_KEY, this.apiUrl);
+        return apiUrl;
     }
 
 
@@ -219,8 +257,8 @@ public class Push {
         return token;
     }
 
-    public void onPushNotification(RemoteMessage message){
-
+    public void onPushNotification(RemoteMessage message) {
+        //TODO implement message handler
     }
 
     public void clear() {

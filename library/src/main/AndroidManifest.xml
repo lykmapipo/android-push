@@ -25,9 +25,9 @@
         </service>
         <!-- end push registration token manager service to listen for instance id events -->
 
-        <!-- start registration token service-->
+        <!-- start registration token service to save registration local and remote-->
         <service android:name=".services.RegistrationTokenService" android:exported="false"/>
-        <!-- end registration token service-->
+        <!-- end registration token service to save registration local and remote-->
 
     </application>
 
