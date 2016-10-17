@@ -22,7 +22,7 @@ public class Push {
     /**
      * key used to stoke latest fcm registration token
      */
-    public static final String REGISTRATION_ID_PREF_KEY = "registrationToken";
+    public static final String REGISTRATION_TOKEN_PREF_KEY = "registrationToken";
 
     /**
      * key used to store application instance id
@@ -48,6 +48,11 @@ public class Push {
      * set of application subscribed push topics
      */
     private Set<String> topics = new HashSet<String>();
+
+    /**
+     * latest push registration token
+     */
+    private String registrationToken;
 
     /**
      * holding context
@@ -125,7 +130,7 @@ public class Push {
             // persist application push topics
             SharedPreferences.Editor editor = preferences.edit();
             editor.putStringSet(TOPICS_PREF_KEY, topics);
-            editor.commit();
+            editor.apply();
 
             //subscribe application to firebase push topic
             FirebaseMessaging.getInstance().subscribeToTopic(topic);
@@ -152,7 +157,7 @@ public class Push {
             //persist application push topics
             SharedPreferences.Editor editor = preferences.edit();
             editor.putStringSet(TOPICS_PREF_KEY, topics);
-            editor.commit();
+            editor.apply();
 
             //un subscribe application from firebase push topic
             FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
@@ -176,11 +181,41 @@ public class Push {
 
     /**
      * obtain list of push topic an application subscribe on
+     *
      * @return topics
      */
     public Set<String> getTopics() {
         Set<String> topics = preferences.getStringSet(TOPICS_PREF_KEY, this.topics);
         return topics;
+    }
+
+
+    /**
+     * Save device push registration token
+     *
+     * @param token
+     * @return registrationToken
+     */
+    public String saveRegistrationToken(String token) {
+        //persist push registration token
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(REGISTRATION_TOKEN_PREF_KEY, token);
+        editor.apply();
+
+        //set instance latest registration token
+        registrationToken = token;
+
+        return registrationToken;
+    }
+
+    /**
+     * obtain current application push registration toke
+     *
+     * @return registrationToken
+     */
+    public String getRegistrationToken() {
+        String token = preferences.getString(REGISTRATION_TOKEN_PREF_KEY, registrationToken);
+        return token;
     }
 
     public void clear() {
@@ -189,10 +224,10 @@ public class Push {
 
         //clear all push preferences
         SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(REGISTRATION_ID_PREF_KEY);
+        editor.remove(REGISTRATION_TOKEN_PREF_KEY);
         editor.remove(INSTANCE_ID_PREF_KEY);
         editor.remove(TOPICS_PREF_KEY);
-        editor.commit();
+        editor.apply();
 
     }
 

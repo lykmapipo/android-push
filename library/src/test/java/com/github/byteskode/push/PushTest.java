@@ -22,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(RobolectricTestRunner.class)
 public class PushTest {
     private Context context;
+    private String registrationToken = "XtSVEtyw023iTy";
 
     @Before
     public void setup() {
@@ -38,6 +39,20 @@ public class PushTest {
 
     @Test
     public void shouldBeAbleToGetInstanceId() {
+    }
+
+    @Test
+    public void shouldBeAbleToSaveDeviceRegistrationToken() {
+        Push push = Push.getInstance(context);
+        String token = push.saveRegistrationToken(registrationToken);
+        assertThat(token, equalTo(registrationToken));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceRegistrationToken() {
+        Push push = Push.getInstance(context);
+        String token = push.getRegistrationToken();
+        assertThat(token, equalTo(registrationToken));
     }
 
     @Test
