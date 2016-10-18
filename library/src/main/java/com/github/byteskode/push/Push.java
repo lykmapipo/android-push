@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.api.DeviceApi;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -107,6 +108,11 @@ public class Push {
      */
     private Context context;
 
+    /**
+     * push message listener
+     */
+    private PushMessageListener pushMessageListener;
+
 
     /**
      * Private constructor
@@ -186,8 +192,29 @@ public class Push {
 
     }
 
+    /**
+     * obtain device endpoint api client
+     *
+     * @return
+     */
     public DeviceApi getDeviceApi() {
         return deviceApi;
+    }
+
+    /**
+     * register push notification message listener
+     *
+     * @param listener
+     */
+    public void registerPushMessageListener(PushMessageListener listener) {
+        this.pushMessageListener = listener;
+    }
+
+    /**
+     * unregister push notification message listener
+     */
+    public void unregisterPushMessageListener() {
+        this.pushMessageListener = null;
     }
 
     /**
@@ -371,7 +398,10 @@ public class Push {
 
 
     public void onPushNotification(RemoteMessage message) {
-        //TODO implement message handler
+        //TODO handle topic message and dispatch them to specific listener
+        if (this.pushMessageListener != null) {
+            pushMessageListener.onMessage(message);
+        }
     }
 
 
