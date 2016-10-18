@@ -77,6 +77,13 @@ public class MainActivity extends Activity implements PushMessageListener {
 }
 ```
 
+## API Server Implementation
+
+API Server endpoint must implemnt `devices resource` and support both `POST` and `PUT` request.
+
+- [See Sample](https://github.com/lykmapipo/byteskode-android-push/blob/master/api/index.js)
+
+
 ## Test
 ```sh
 ./gradlew test
