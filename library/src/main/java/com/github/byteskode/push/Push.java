@@ -11,6 +11,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 import retrofit2.Call;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -159,13 +160,16 @@ public class Push {
         this.topics = preferences.getStringSet(TOPICS_PREF_KEY, this.topics);
 
         //initialize device server api endpoints
-//        if (this.deviceApi == null && this.apiBaseUrl != null && !this.apiBaseUrl.isEmpty()) {
-//            Retrofit retrofit = new Retrofit.Builder().baseUrl(this.apiBaseUrl).build();
-//            deviceApi = retrofit.create(DeviceApi.class);
-//        }
+        if ((this.deviceApi == null) && (this.apiBaseUrl != null) && !this.apiBaseUrl.isEmpty()) {
+            Retrofit retrofit = new Retrofit.Builder().baseUrl(this.apiBaseUrl).build();
+            deviceApi = retrofit.create(DeviceApi.class);
+        }
 
     }
 
+    public DeviceApi getDeviceApi() {
+        return deviceApi;
+    }
 
     /**
      * save server api endpoint to post and update device push details

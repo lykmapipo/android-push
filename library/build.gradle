@@ -5,7 +5,7 @@ group = 'com.github.byteskode'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         minSdkVersion 14
@@ -29,6 +29,7 @@ dependencies {
     //test dependencies
     testCompile "junit:junit:${JUNIT_VERSION}"
     testCompile "org.mockito:mockito-core:${MOCKITO_VERSION}"
+    testCompile "com.squareup.retrofit2:retrofit-mock:${RETROFIT_VERSION}"
     testCompile "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
 }
 
