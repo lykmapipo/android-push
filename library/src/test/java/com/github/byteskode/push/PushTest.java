@@ -1,6 +1,7 @@
 package com.github.byteskode.push;
 
 import android.content.Context;
+import com.github.byteskode.push.api.DeviceApi;
 import com.google.firebase.FirebaseApp;
 import org.junit.After;
 import org.junit.Before;
@@ -9,9 +10,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
-import retrofit2.Retrofit;
-import retrofit2.mock.MockRetrofit;
-import retrofit2.mock.NetworkBehavior;
 
 import java.util.Set;
 
@@ -41,7 +39,9 @@ public class PushTest {
 
     @Test
     public void shouldBeAbleToGetPushInstance() {
+
         Push push = Push.getInstance();
+
         assertThat(push, is(not(equalTo(null))));
         assertThat(push.getApiBaseUrl(), is(not(equalTo(null))));
         assertThat(push.getApiAuthorizationToken(), is(not(equalTo(null))));
@@ -49,7 +49,87 @@ public class PushTest {
     }
 
     @Test
+    public void shouldBeAbleToInitializeDeviceApi() {
+
+        Push push = Push.getInstance();
+
+        DeviceApi deviceApi = push.getDeviceApi();
+        assertThat(deviceApi, is(not(equalTo(null))));
+    }
+
+
+    @Test
+    public void shouldBeAbleToSetApiBaseUrl() {
+
+        Push push = Push.getInstance();
+        String apiBaseUrl = push.setApiBaseUrl(this.apiBaseUrl);
+
+        assertThat(apiBaseUrl, equalTo(this.apiBaseUrl));
+    }
+
+    @Test
+    public void shouldBeAbleToGetApiBaseUrl() {
+
+        Push push = Push.getInstance();
+        push.setApiBaseUrl(this.apiBaseUrl);
+
+        String apiBaseUrl = push.getApiBaseUrl();
+
+        assertThat(apiBaseUrl, equalTo(this.apiBaseUrl));
+    }
+
+    @Test
+    public void shouldBeAbleToSetApiAuthorizationToken() {
+
+        Push push = Push.getInstance();
+        String authorizationToken = push.setApiAuthorizationToken(this.apiAuthorizationToken);
+
+        assertThat(authorizationToken, equalTo(this.apiAuthorizationToken));
+    }
+
+    @Test
+    public void shouldBeAbleToGetApiAuthorizationToken() {
+
+        Push push = Push.getInstance();
+        push.setApiAuthorizationToken(this.apiAuthorizationToken);
+
+        String apiAuthorizationToken = push.getApiAuthorizationToken();
+
+        assertThat(apiAuthorizationToken, equalTo(this.apiAuthorizationToken));
+    }
+
+    @Test
     public void shouldBeAbleToGetInstanceId() {
+    }
+
+
+    @Test
+    public void shouldBeAbleToSubscribeToPushTopic() {
+        String topic = "MAIZE";
+        Set<String> topics = Push.getInstance().subscribe(topic);
+        assertThat(topics.contains(topic), equalTo(true));
+    }
+
+    @Test
+    public void shouldBeAbleToUnSubscribeToPushTopic() {
+        String topic = "MAIZE";
+
+        Push push = Push.getInstance();
+        push.subscribe(topic);
+
+        Set<String> topics = push.unsubscribe(topic);
+        assertThat(topics.contains(topic), equalTo(false));
+    }
+
+    @Test
+    public void shouldBeAbleToObtainSubscribedPushTopics() {
+        String topic = "MAIZE";
+
+        Push push = Push.getInstance();
+        push.subscribe(topic);
+
+        Set<String> topics = push.getTopics();
+        assertThat(topics.contains(topic), equalTo(true));
     }
 
     @Test
@@ -69,56 +149,7 @@ public class PushTest {
     }
 
     @Test
-    public void shouldBeAbleToSubscribeToPushTopic() {
-        String topic = "MAIZE";
-        Set<String> topics = Push.getInstance().subscribe(topic);
-        assertThat(topics.contains(topic), equalTo(true));
-    }
-
-    @Test
-    public void shouldBeAbleToObtainSubscribedPushTopics() {
-        String topic = "MAIZE";
-
-        Push push = Push.getInstance();
-        push.subscribe(topic);
-
-        Set<String> topics = push.getTopics();
-        assertThat(topics.contains(topic), equalTo(true));
-    }
-
-    @Test
-    public void shouldBeAbleToUnSubscribeToPushTopic() {
-        String topic = "MAIZE";
-
-        Push push = Push.getInstance();
-        push.subscribe(topic);
-
-        Set<String> topics = push.unsubscribe(topic);
-        assertThat(topics.contains(topic), equalTo(false));
-    }
-
-    @Test
-    public void shouldBeAbleToSetApiBaseUrl() {
-
-        Push push = Push.getInstance();
-        String apiUrl = push.setApiBaseUrl(apiBaseUrl);
-
-        assertThat(apiUrl, equalTo(apiBaseUrl));
-    }
-
-    @Test
-    public void shouldBeAbleToGetApiBaseUrl() {
-
-        Push push = Push.getInstance();
-        push.setApiBaseUrl(apiBaseUrl);
-
-        String apiUrl = push.getApiBaseUrl();
-
-        assertThat(apiUrl, equalTo(apiBaseUrl));
-    }
-
-    @Test
-    public void shouldBeAbleToCheckIfDeviceHasInternetConnection(){
+    public void shouldBeAbleToCheckIfDeviceHasInternetConnection() {
         Push push = Push.getInstance();
 
         boolean connected = push.isConnected();

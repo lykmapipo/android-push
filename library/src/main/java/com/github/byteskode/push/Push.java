@@ -208,6 +208,16 @@ public class Push {
         return this.apiBaseUrl;
     }
 
+    /**
+     * get server api endpoint to post and update device push details
+     *
+     * @return
+     */
+    public String getApiBaseUrl() {
+        String apiUrl = preferences.getString(API_BASE_URL_PREF_KEY, this.apiBaseUrl);
+        return apiUrl;
+    }
+
 
     /**
      * save server api endpoint authorization token to post and update device push details
@@ -225,17 +235,6 @@ public class Push {
         this.apiAuthorizationToken = authorizationToken;
 
         return this.apiAuthorizationToken;
-    }
-
-
-    /**
-     * get server api endpoint to post and update device push details
-     *
-     * @return
-     */
-    public String getApiBaseUrl() {
-        String apiUrl = preferences.getString(API_BASE_URL_PREF_KEY, this.apiBaseUrl);
-        return apiUrl;
     }
 
 
@@ -317,25 +316,6 @@ public class Push {
         }
     }
 
-
-    /**
-     * Send push message
-     *
-     * @param message
-     * @see {@link com.google.firebase.messaging.RemoteMessage}
-     * @see {@link com.google.firebase.messaging.FirebaseMessaging}
-     */
-    public void send(RemoteMessage message) {
-        //TODO implement sent and error callback
-        FirebaseMessaging.getInstance().send(message);
-    }
-
-
-    public void onPushNotification(RemoteMessage message) {
-        //TODO implement message handler
-    }
-
-
     /**
      * obtain list of push topic an application subscribe on
      *
@@ -378,6 +358,24 @@ public class Push {
 
 
     /**
+     * Send push message
+     *
+     * @param message
+     * @see {@link com.google.firebase.messaging.RemoteMessage}
+     * @see {@link com.google.firebase.messaging.FirebaseMessaging}
+     */
+    public void send(RemoteMessage message) {
+        //TODO implement sent and error callback
+        FirebaseMessaging.getInstance().send(message);
+    }
+
+
+    public void onPushNotification(RemoteMessage message) {
+        //TODO implement message handler
+    }
+
+
+    /**
      * create new device push registration details in remote api server(app server)
      *
      * @param registrationToken
@@ -385,7 +383,7 @@ public class Push {
      * @throws IOException
      */
     public Response<Device> create(String registrationToken) throws IOException {
-        if (this.deviceApi != null) {
+        if (this.deviceApi != null && this.isConnected()) {
             //prepare device
             Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
 
@@ -410,7 +408,7 @@ public class Push {
      * @throws IOException
      */
     public Response<Device> update(String registrationToken) throws IOException {
-        if (this.deviceApi != null) {
+        if (this.deviceApi != null && this.isConnected()) {
             //prepare device
             Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
 
