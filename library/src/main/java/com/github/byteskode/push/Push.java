@@ -9,9 +9,12 @@ import com.github.byteskode.push.api.DeviceApi;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -76,7 +79,7 @@ public class Push {
     /**
      * latest push registration token
      */
-    private String registrationToken;
+    private String registrationToken = "";
 
     /**
      * server api endpoint to post and update device push details
@@ -161,7 +164,16 @@ public class Push {
 
         //initialize device server api endpoints
         if ((this.deviceApi == null) && (this.apiBaseUrl != null) && !this.apiBaseUrl.isEmpty()) {
-            Retrofit retrofit = new Retrofit.Builder().baseUrl(this.apiBaseUrl).build();
+
+            //prepare gson convertor
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().create();
+
+            //prepare retrofit device api endpoint client
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(this.apiBaseUrl)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+
             deviceApi = retrofit.create(DeviceApi.class);
         }
 

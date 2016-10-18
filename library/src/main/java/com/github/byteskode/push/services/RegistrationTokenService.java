@@ -35,8 +35,12 @@ public class RegistrationTokenService extends IntentService {
             //obtain current registration token
             String currentRegistrationToken = push.getRegistrationToken();
 
+            Log.d(TAG, currentRegistrationToken);
+
             //obtain latest registration token from FirebaseInstanceId service
             String latestRegistrationToken = FirebaseInstanceId.getInstance().getToken();
+            Log.d(TAG, latestRegistrationToken);
+
 
             //check if token are different for updates
             boolean shouldUpdateServerToken = !currentRegistrationToken.equals(latestRegistrationToken);
@@ -50,7 +54,7 @@ public class RegistrationTokenService extends IntentService {
                 Response<Device> response;
 
                 //post device details
-                if (currentRegistrationToken.equals(null)) {
+                if (currentRegistrationToken.equals(null) || currentRegistrationToken.isEmpty()) {
                     response = push.create(latestRegistrationToken);
                 }
 
@@ -70,7 +74,7 @@ public class RegistrationTokenService extends IntentService {
 
         } catch (Exception e) {
             //TODO notify event
-            Log.e(TAG, e.getMessage());
+            Log.d(TAG, e.toString());
         }
     }
 }
