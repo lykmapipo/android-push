@@ -19,7 +19,7 @@ add `byteskode-android-push` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.byteskode:byteskode-android-push:{latest version}'
+    compile 'compile 'com.github.lykmapipo:byteskode-android-push:v0.1.0'
 }
 ```
 
