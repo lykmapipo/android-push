@@ -3,6 +3,7 @@ package com.github.byteskode.push.api;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -12,7 +13,8 @@ import java.util.Set;
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
  * @date 10/17/16
  */
-public class Device {
+public class Device implements Serializable {
+
     @Expose
     @SerializedName("instanceId")
     private String instanceId;
