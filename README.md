@@ -35,7 +35,7 @@ public class SampleApp extends Application{
         super.onCreate();
 
         //initialize push
-        Push.getInstance(this);
+        Push.initialize(<context>, <apiBaseUrl>, <apiAuthorizationToken>);
     }
 
 }
