@@ -117,6 +117,15 @@ public class PushTest {
         assertThat(apiUrl, equalTo(apiBaseUrl));
     }
 
+    @Test
+    public void shouldBeAbleToCheckIfDeviceHasInternetConnection(){
+        Push push = Push.getInstance();
+
+        boolean connected = push.isConnected();
+
+        assertThat(connected, equalTo(true));
+    }
+
     @After
     public void cleanup() {
         Push.getInstance().clear();

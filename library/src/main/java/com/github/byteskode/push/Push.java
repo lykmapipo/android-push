@@ -3,6 +3,8 @@ package com.github.byteskode.push;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.api.DeviceApi;
@@ -422,6 +424,27 @@ public class Push {
         } else {
             return null;
         }
+    }
+
+
+    /**
+     * Checks if there is Internet connection or data connection on the device.
+     *
+     * @return boolean
+     */
+    public boolean isConnected() {
+
+        ConnectivityManager connectivity =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connectivity.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+
+        return false;
+
     }
 
 

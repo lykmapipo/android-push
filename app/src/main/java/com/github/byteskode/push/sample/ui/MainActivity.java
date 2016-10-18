@@ -15,6 +15,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         Log.d(MainActivity.class.getSimpleName(), Push.getInstance().getInstanceId());
+        Log.d(MainActivity.class.getSimpleName(), String.valueOf(Push.getInstance().isConnected()));
     }
 
     @Override
