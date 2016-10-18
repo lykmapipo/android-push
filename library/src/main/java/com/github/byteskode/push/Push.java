@@ -248,7 +248,7 @@ public class Push {
     public Set<String> subscribe(String topic) {
         try {
             //add topic to application push topics
-            if (topic != null && !topic.isEmpty()) {
+            if ((topic != null) && !topic.isEmpty()) {
                 topics.add(topic);
             }
 
@@ -276,7 +276,7 @@ public class Push {
      */
     public Set<String> unsubscribe(String topic) {
         try {
-            if (topic != null & !topic.isEmpty()) {
+            if ((topic != null) & !topic.isEmpty()) {
                 topics.remove(topic);
             }
 

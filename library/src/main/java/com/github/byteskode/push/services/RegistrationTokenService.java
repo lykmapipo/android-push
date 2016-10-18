@@ -2,6 +2,7 @@ package com.github.byteskode.push.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.api.Device;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -45,15 +46,14 @@ public class RegistrationTokenService extends IntentService {
                 //save or update current device registration token
                 push.setRegistrationToken(latestRegistrationToken);
 
-                //prepare device push details
-                Device device = new Device(push.getInstanceId(), latestRegistrationToken, push.getTopics());
-
+                //wait for api end point response
                 Response<Device> response;
 
                 //post device details
                 if (currentRegistrationToken.equals(null)) {
                     response = push.create(latestRegistrationToken);
                 }
+
                 //put device details
                 else {
                     response = push.update(latestRegistrationToken);
@@ -70,6 +70,7 @@ public class RegistrationTokenService extends IntentService {
 
         } catch (Exception e) {
             //TODO notify event
+            Log.e(TAG, e.getMessage());
         }
     }
 }
