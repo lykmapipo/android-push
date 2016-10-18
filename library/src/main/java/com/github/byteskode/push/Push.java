@@ -379,20 +379,24 @@ public class Push {
      * create new device push registration details in remote api server(app server)
      *
      * @param registrationToken
-     * @return
+     * @return Response<Device> or null
      * @throws IOException
      */
     public Response<Device> create(String registrationToken) throws IOException {
-        //prepare device
-        Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
+        if (this.deviceApi != null) {
+            //prepare device
+            Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
 
-        //prepare authorization header value
-        String authorization = "Bearer " + this.getApiAuthorizationToken();
+            //prepare authorization header value
+            String authorization = "Bearer " + this.getApiAuthorizationToken();
 
-        //call POST /devices
-        Call<Device> call = this.deviceApi.create(authorization, device);
-        Response<Device> response = call.execute();
-        return response;
+            //call POST /devices
+            Call<Device> call = this.deviceApi.create(authorization, device);
+            Response<Device> response = call.execute();
+            return response;
+        } else {
+            return null;
+        }
     }
 
 
@@ -400,20 +404,24 @@ public class Push {
      * update existing device push registration details in remote api server(app server)
      *
      * @param registrationToken
-     * @return
+     * @return Response<Device> or null
      * @throws IOException
      */
     public Response<Device> update(String registrationToken) throws IOException {
-        //prepare device
-        Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
+        if (this.deviceApi != null) {
+            //prepare device
+            Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
 
-        //prepare authorization header value
-        String authorization = "Bearer " + this.getApiAuthorizationToken();
+            //prepare authorization header value
+            String authorization = "Bearer " + this.getApiAuthorizationToken();
 
-        //call PUT /devices
-        Call<Device> call = this.deviceApi.update(authorization, device);
-        Response<Device> response = call.execute();
-        return response;
+            //call PUT /devices
+            Call<Device> call = this.deviceApi.update(authorization, device);
+            Response<Device> response = call.execute();
+            return response;
+        } else {
+            return null;
+        }
     }
 
 
