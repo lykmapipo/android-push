@@ -7,6 +7,10 @@
             android:allowBackup="true"
             android:label="@string/app_name">
 
+        <!-- start required permissions-->
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        <!--end required permissions-->
+
         <!-- start push message receiver service to listen for message events-->
         <service
                 android:name=".services.PushMessagingService">
@@ -25,9 +29,24 @@
         </service>
         <!-- end push registration token manager service to listen for instance id events -->
 
-        <!-- start registration token service to save registration local and remote-->
-        <service android:name=".services.RegistrationTokenService" android:exported="false"/>
-        <!-- end registration token service to save registration local and remote-->
+        <!-- start sync push device details service-->
+        <service
+                android:name=".services.DeviceSyncService"
+                android:exported="true"
+                android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+            <intent-filter>
+                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY"/>
+            </intent-filter>
+        </service>
+        <!-- end sync push device details service-->
+
+        <!-- start device boot broadcast receive to sync device details if not synced -->
+        <receiver android:name=".receivers.NetworkChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+        <!-- end device boot broadcast receive to sync device details if not synced -->
 
     </application>
 

@@ -15,7 +15,7 @@ public class PushMessagingService extends FirebaseMessagingService {
 
     /**
      * handle received push notification message
-     * @see {@link https://firebase.google.com/docs/cloud-messaging/android/receive}
+     *
      * @param message
      */
     @Override

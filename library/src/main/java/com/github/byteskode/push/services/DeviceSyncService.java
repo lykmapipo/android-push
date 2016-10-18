@@ -1,33 +1,26 @@
 package com.github.byteskode.push.services;
 
-import android.app.IntentService;
-import android.content.Intent;
-import android.util.Log;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.api.Device;
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.GcmTaskService;
+import com.google.android.gms.gcm.TaskParams;
 import com.google.firebase.iid.FirebaseInstanceId;
 import retrofit2.Response;
 
 /**
- * receive new registration token, save it in shared preference and send to api server
+ * sync device push details whenever network is become available
  *
  * @author lally elias
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
- * @date 10/17/16
+ * @date 10/18/16
  */
-public class RegistrationTokenService extends IntentService {
-    //TODO add logs
-    private static final String TAG = RegistrationTokenService.class.getSimpleName();
+public class DeviceSyncService extends GcmTaskService {
 
-    /**
-     * Creates an IntentService
-     */
-    public RegistrationTokenService() {
-        super(TAG);
-    }
+    public static final String TASK_TAG = "deviceSync";
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onRunTask(TaskParams taskParams) {
         try {
             //obtain push instance
             Push push = Push.getInstance();
@@ -41,6 +34,8 @@ public class RegistrationTokenService extends IntentService {
             //check if token are different for updates
             boolean shouldUpdateServerToken = !currentRegistrationToken.equals(latestRegistrationToken);
 
+            //prepare task result
+            int result = GcmNetworkManager.RESULT_SUCCESS;
 
             if (shouldUpdateServerToken) {
                 //save or update current device registration token
@@ -61,18 +56,21 @@ public class RegistrationTokenService extends IntentService {
 
                 if ((response != null)) {
                     if (response.isSuccessful()) {
-                        //TODO handle success and notify new token
+                        //TODO notify new registration token received
+                        result = GcmNetworkManager.RESULT_SUCCESS;
                     } else {
-                        //TODO handle failure and notify new token
+                        //reschedule push device details sync
+                        result = GcmNetworkManager.RESULT_RESCHEDULE;
                     }
                 }
 
-                //TODO in case of network failure schedule retries or use wake and boot events
             }
 
+            return result;
+
         } catch (Exception e) {
-            //TODO notify event
-            Log.d(TAG, e.toString());
+            //reschedule push device details sync in case of any exception
+            return GcmNetworkManager.RESULT_RESCHEDULE;
         }
     }
 }

@@ -13,6 +13,7 @@ public class SampleApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Push.initialize(this, "https://www.example.com", "622hs4853YtWT1Pa7");
+        //TODO replace with your baseUrl and registration token
+        Push.initialize(this, "http:/192.168.43.140:3000", "622hs4853YtWT1Pa7");
     }
 }
