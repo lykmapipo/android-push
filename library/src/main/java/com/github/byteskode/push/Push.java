@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.api.DeviceApi;
 import com.google.firebase.iid.FirebaseInstanceId;

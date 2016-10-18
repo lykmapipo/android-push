@@ -2,7 +2,6 @@ package com.github.byteskode.push.sample.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.PushMessageListener;
@@ -33,6 +32,11 @@ public class MainActivity extends Activity implements PushMessageListener {
 
     @Override
     public void onMessage(RemoteMessage remoteMessage) {
-        Toast.makeText(this, "Push Received", Toast.LENGTH_SHORT);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, "Push Received", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
