@@ -20,7 +20,7 @@ public class PushMessagingService extends FirebaseMessagingService {
      */
     @Override
     public void onMessageReceived(RemoteMessage message) {
-        Push push = Push.getInstance(getApplicationContext());
+        Push push = Push.getInstance();
         push.onPushNotification(message);
     }
 }

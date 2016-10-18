@@ -4,12 +4,15 @@ package com.github.byteskode.push;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.api.DeviceApi;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
-import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.Response;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,35 +29,48 @@ public class Push {
      */
     public static final String REGISTRATION_TOKEN_PREF_KEY = "registrationToken";
 
+
     /**
      * key used to store application instance id
      */
     public static final String INSTANCE_ID_PREF_KEY = "instanceId";
+
 
     /**
      * key used to store application subscribed push topics
      */
     public static final String TOPICS_PREF_KEY = "topics";
 
+
     /**
      * key used to store api server end point to post and update device push details
      */
     public static final String API_BASE_URL_PREF_KEY = "apiBaseUrl";
+
+
+    /**
+     * key used to store api server authorization token
+     */
+    public static final String API_AUTHORIZATION_TOKEN_PREF_KEY = "apiAuthorizationToken";
+
 
     /**
      * class instance
      */
     private static Push instance = null;
 
+
     /**
      * shared preference instance
      */
     private SharedPreferences preferences;
 
+
     /**
      * set of application subscribed push topics
      */
     private Set<String> topics = new HashSet<String>();
+
 
     /**
      * latest push registration token
@@ -64,17 +80,26 @@ public class Push {
     /**
      * server api endpoint to post and update device push details
      */
-    private String apiBaseUrl;
+    private String apiBaseUrl = "";
+
+
+    /**
+     * server api authorization token
+     */
+    private String apiAuthorizationToken = "";
+
 
     /**
      * device api used to sync device push details to remove server
      */
     private DeviceApi deviceApi;
 
+
     /**
      * holding context
      */
     private Context context;
+
 
     /**
      * Private constructor
@@ -87,75 +112,98 @@ public class Push {
 
 
     /**
-     * Singleton instance method
+     * obtain current push instance
      *
-     * @param context
      * @return {@link com.github.byteskode.push.Push}
      */
-    public static synchronized Push getInstance(Context context) {
+    public static synchronized Push getInstance() {
+        return instance;
+    }
+
+
+    /**
+     * initialize new push instance
+     *
+     * @return {@link com.github.byteskode.push.Push}
+     */
+    public static synchronized Push initialize(Context context, String apiBaseUrl, String apiAuthorizationToken) {
+
         if (instance == null) {
 
-            //instantiate push
+            //instantiate new push
             instance = new Push(context);
 
-            //initialize push
-            instance.init();
+            //initialize
+            instance.init(apiBaseUrl, apiAuthorizationToken);
         }
 
         return instance;
-
     }
 
 
     /**
      * initialize push internal
      */
-    private void init() {
+    private void init(String apiBaseUrl, String apiAuthorizationToken) {
 
         //obtain preference manager
-        preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+
+        //set api base url
+        instance.setApiBaseUrl(apiBaseUrl);
+
+        //set authorization token
+        instance.setApiAuthorizationToken(apiAuthorizationToken);
 
         //load existing topics
         this.topics = preferences.getStringSet(TOPICS_PREF_KEY, this.topics);
 
-    }
+        //initialize device server api endpoints
+//        if (this.deviceApi == null && this.apiBaseUrl != null && !this.apiBaseUrl.isEmpty()) {
+//            Retrofit retrofit = new Retrofit.Builder().baseUrl(this.apiBaseUrl).build();
+//            deviceApi = retrofit.create(DeviceApi.class);
+//        }
 
-    /**
-     * initialize device api server
-     */
-    private void initDeviceApi() {
-        if (deviceApi == null && apiBaseUrl != null && !apiBaseUrl.isEmpty()) {
-            Retrofit retrofit = new Retrofit.Builder().baseUrl(this.apiBaseUrl).build();
-            deviceApi = retrofit.create(DeviceApi.class);
-        }
-    }
-
-    public DeviceApi getDeviceApi() {
-        //TODO ensure it initialized
-        return deviceApi;
     }
 
 
     /**
      * save server api endpoint to post and update device push details
      *
-     * @param apiUrl
+     * @param apiBaseUrl
      * @return
      */
-    public String setApiUrl(String apiUrl) {
+    public String setApiBaseUrl(String apiBaseUrl) {
         //save api url to shared preference
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(API_BASE_URL_PREF_KEY, apiUrl);
+        editor.putString(API_BASE_URL_PREF_KEY, apiBaseUrl);
         editor.apply();
 
         //update in memory apiBaseUrl
-        this.apiBaseUrl = apiUrl;
-
-        //init device api
-//        initDeviceApi();
+        this.apiBaseUrl = apiBaseUrl;
 
         return this.apiBaseUrl;
     }
+
+
+    /**
+     * save server api endpoint authorization token to post and update device push details
+     *
+     * @param authorizationToken
+     * @return
+     */
+    public String setApiAuthorizationToken(String authorizationToken) {
+        //save api authorization token to shared preference
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(API_AUTHORIZATION_TOKEN_PREF_KEY, authorizationToken);
+        editor.apply();
+
+        //update in memory api authorization token
+        this.apiAuthorizationToken = authorizationToken;
+
+        return this.apiAuthorizationToken;
+    }
+
 
     /**
      * get server api endpoint to post and update device push details
@@ -169,6 +217,18 @@ public class Push {
 
 
     /**
+     * get server api endpoint authorization token to post and update device push details
+     *
+     * @return
+     */
+    public String getApiAuthorizationToken() {
+        String apiAuthorizationToken =
+                preferences.getString(API_AUTHORIZATION_TOKEN_PREF_KEY, this.apiAuthorizationToken);
+        return apiAuthorizationToken;
+    }
+
+
+    /**
      * Compute installation unique instance id
      *
      * @return instanceId
@@ -177,6 +237,7 @@ public class Push {
         String instanceId = FirebaseInstanceId.getInstance().getId();
         return instanceId;
     }
+
 
     /**
      * Subscribe to a given push topic
@@ -206,6 +267,7 @@ public class Push {
         }
     }
 
+
     /**
      * Unsubscribe from a given push topic
      *
@@ -232,6 +294,7 @@ public class Push {
         }
     }
 
+
     /**
      * Send push message
      *
@@ -243,6 +306,12 @@ public class Push {
         //TODO implement sent and error callback
         FirebaseMessaging.getInstance().send(message);
     }
+
+
+    public void onPushNotification(RemoteMessage message) {
+        //TODO implement message handler
+    }
+
 
     /**
      * obtain list of push topic an application subscribe on
@@ -256,12 +325,12 @@ public class Push {
 
 
     /**
-     * Save device push registration token
+     * Save device push registration token in shared preferences
      *
      * @param token
      * @return registrationToken
      */
-    public String saveRegistrationToken(String token) {
+    public String setRegistrationToken(String token) {
         //persist push registration token
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(REGISTRATION_TOKEN_PREF_KEY, token);
@@ -273,8 +342,9 @@ public class Push {
         return registrationToken;
     }
 
+
     /**
-     * obtain current application push registration toke
+     * obtain current application push registration token
      *
      * @return registrationToken
      */
@@ -283,13 +353,53 @@ public class Push {
         return token;
     }
 
-    public void onPushNotification(RemoteMessage message) {
-        //TODO implement message handler
+
+    /**
+     * create new device push registration details in remote api server(app server)
+     *
+     * @param registrationToken
+     * @return
+     * @throws IOException
+     */
+    public Response<Device> create(String registrationToken) throws IOException {
+        //prepare device
+        Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
+
+        //prepare authorization header value
+        String authorization = "Bearer " + this.getApiAuthorizationToken();
+
+        //call POST /devices
+        Call<Device> call = this.deviceApi.create(authorization, device);
+        Response<Device> response = call.execute();
+        return response;
     }
 
+
+    /**
+     * update existing device push registration details in remote api server(app server)
+     *
+     * @param registrationToken
+     * @return
+     * @throws IOException
+     */
+    public Response<Device> update(String registrationToken) throws IOException {
+        //prepare device
+        Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
+
+        //prepare authorization header value
+        String authorization = "Bearer " + this.getApiAuthorizationToken();
+
+        //call PUT /devices
+        Call<Device> call = this.deviceApi.update(authorization, device);
+        Response<Device> response = call.execute();
+        return response;
+    }
+
+
+    /**
+     * clear push shared preferences
+     */
     public void clear() {
-        //clear in memory topics
-        topics.clear();
 
         //clear all push preferences
         SharedPreferences.Editor editor = preferences.edit();
@@ -297,6 +407,7 @@ public class Push {
         editor.remove(INSTANCE_ID_PREF_KEY);
         editor.remove(TOPICS_PREF_KEY);
         editor.remove(API_BASE_URL_PREF_KEY);
+        editor.remove(API_AUTHORIZATION_TOKEN_PREF_KEY);
         editor.apply();
 
     }

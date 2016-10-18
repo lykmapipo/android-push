@@ -13,7 +13,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(MainActivity.class.getSimpleName(), Push.getInstance(this).getInstanceId());
+        Log.d(MainActivity.class.getSimpleName(), Push.getInstance().getInstanceId());
 
     }
 

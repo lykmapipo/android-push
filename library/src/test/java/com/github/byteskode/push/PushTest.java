@@ -24,18 +24,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class PushTest {
     private Context context;
     private String registrationToken = "XtSVEtyw023iTy";
-    private String apiBaseUrl ="https://www.example.com/";
+    private String apiAuthorizationToken = "TtSVEtyw023iTy";
+    private String apiBaseUrl = "https://www.example.com/";
 
     @Before
     public void setup() {
         context = ShadowApplication.getInstance().getApplicationContext();
+        Push.initialize(context, apiBaseUrl, apiAuthorizationToken);
         FirebaseApp.initializeApp(context);
     }
 
 
     @Test
     public void shouldBeAbleToGetPushInstance() {
-        Push push = Push.getInstance(context);
+        Push push = Push.getInstance();
         assertThat(push, is(not(equalTo(null))));
     }
 
@@ -45,15 +47,15 @@ public class PushTest {
 
     @Test
     public void shouldBeAbleToSaveDeviceRegistrationToken() {
-        Push push = Push.getInstance(context);
-        String token = push.saveRegistrationToken(registrationToken);
+        Push push = Push.getInstance();
+        String token = push.setRegistrationToken(registrationToken);
         assertThat(token, equalTo(registrationToken));
     }
 
     @Test
     public void shouldBeAbleToGetDeviceRegistrationToken() {
-        Push push = Push.getInstance(context);
-        push.saveRegistrationToken(registrationToken);
+        Push push = Push.getInstance();
+        push.setRegistrationToken(registrationToken);
 
         String token = push.getRegistrationToken();
         assertThat(token, equalTo(registrationToken));
@@ -62,7 +64,7 @@ public class PushTest {
     @Test
     public void shouldBeAbleToSubscribeToPushTopic() {
         String topic = "MAIZE";
-        Set<String> topics = Push.getInstance(context).subscribe(topic);
+        Set<String> topics = Push.getInstance().subscribe(topic);
         assertThat(topics.contains(topic), equalTo(true));
     }
 
@@ -70,7 +72,7 @@ public class PushTest {
     public void shouldBeAbleToObtainSubscribedPushTopics() {
         String topic = "MAIZE";
 
-        Push  push = Push.getInstance(context);
+        Push push = Push.getInstance();
         push.subscribe(topic);
 
         Set<String> topics = push.getTopics();
@@ -81,7 +83,7 @@ public class PushTest {
     public void shouldBeAbleToUnSubscribeToPushTopic() {
         String topic = "MAIZE";
 
-        Push  push = Push.getInstance(context);
+        Push push = Push.getInstance();
         push.subscribe(topic);
 
         Set<String> topics = push.unsubscribe(topic);
@@ -91,26 +93,26 @@ public class PushTest {
     @Test
     public void shouldBeAbleToSetApiBaseUrl() {
 
-        Push  push = Push.getInstance(context);
-        String apiUrl = push.setApiUrl(this.apiBaseUrl);
+        Push push = Push.getInstance();
+        String apiUrl = push.setApiBaseUrl(apiBaseUrl);
 
-        assertThat(apiUrl, equalTo(this.apiBaseUrl));
+        assertThat(apiUrl, equalTo(apiBaseUrl));
     }
 
     @Test
     public void shouldBeAbleToGetApiBaseUrl() {
 
-        Push  push = Push.getInstance(context);
-        push.setApiUrl(this.apiBaseUrl);
+        Push push = Push.getInstance();
+        push.setApiBaseUrl(apiBaseUrl);
 
         String apiUrl = push.getApiBaseUrl();
 
-        assertThat(apiUrl, equalTo(this.apiBaseUrl));
+        assertThat(apiUrl, equalTo(apiBaseUrl));
     }
 
     @After
     public void cleanup() {
-        Push.getInstance(context).clear();
+        Push.getInstance().clear();
         context = null;
     }
 }

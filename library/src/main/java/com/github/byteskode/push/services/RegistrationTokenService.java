@@ -29,7 +29,7 @@ public class RegistrationTokenService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         try {
             //obtain push instance
-            Push push = Push.getInstance(getApplicationContext());
+            Push push = Push.getInstance();
 
             //obtain current registration token
             String currentRegistrationToken = push.getRegistrationToken();
@@ -43,7 +43,7 @@ public class RegistrationTokenService extends IntentService {
 
             if (shouldUpdateServerToken) {
                 //save or update current device registration token
-                push.saveRegistrationToken(latestRegistrationToken);
+                push.setRegistrationToken(latestRegistrationToken);
 
                 //prepare device push details
                 Device device = new Device(push.getInstanceId(), latestRegistrationToken, push.getTopics());
@@ -52,11 +52,11 @@ public class RegistrationTokenService extends IntentService {
 
                 //post device details
                 if (currentRegistrationToken.equals(null)) {
-                    response = push.getDeviceApi().create(device).execute();
+                    response = push.create(latestRegistrationToken);
                 }
                 //put device details
                 else {
-                    response = push.getDeviceApi().update(device).execute();
+                    response = push.update(latestRegistrationToken);
                 }
 
                 if (response.isSuccessful()) {

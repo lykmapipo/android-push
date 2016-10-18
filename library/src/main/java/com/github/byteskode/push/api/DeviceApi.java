@@ -11,10 +11,18 @@ import retrofit2.http.*;
 public interface DeviceApi {
     //TODO handle token auth
 
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json",
+    })
     @POST("devices")
-    Call<Device> create(@Body Device device);
+    Call<Device> create(@Header("Authorization") String authorization, @Body Device device);
 
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json",
+    })
     @PUT("devices")
-    Call<Device> update(@Body Device device);
+    Call<Device> update(@Header("Authorization") String authorization, @Body Device device);
 
 }
