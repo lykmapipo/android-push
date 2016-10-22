@@ -6,11 +6,13 @@ import android.util.Log;
 import android.widget.Toast;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.PushMessageListener;
+import com.github.byteskode.push.PushTokenListener;
+import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.sample.R;
 import com.google.firebase.messaging.RemoteMessage;
 
 
-public class MainActivity extends Activity implements PushMessageListener {
+public class MainActivity extends Activity implements PushMessageListener, PushTokenListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
@@ -36,6 +38,7 @@ public class MainActivity extends Activity implements PushMessageListener {
         Log.d(TAG, "UUID x2:" + Push.getInstance().getUUID());
 
         Push.getInstance().registerPushMessageListener(this);
+        Push.getInstance().registerPushTokenListener(this);
     }
 
     @Override
@@ -48,6 +51,7 @@ public class MainActivity extends Activity implements PushMessageListener {
     protected void onDestroy() {
         super.onDestroy();
         Push.getInstance().unregisterPushMessageListener();
+        Push.getInstance().unregisterPushTokenListener();
     }
 
     @Override
@@ -58,5 +62,17 @@ public class MainActivity extends Activity implements PushMessageListener {
                 Toast.makeText(MainActivity.this, "Push Received", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onRegistrationTokenRefreshed(Device device) {
+        Log.d(TAG, "DEVICE UUID: " + device.getUuid());
+        Log.d(TAG, "DEVICE Registration Token: " + device.getRegistrationToken());
+        Log.d(TAG, "DEVICE Registration InstanceID: " + device.getInstanceId());
+    }
+
+    @Override
+    public void onRegistrationTokenError(String error) {
+        Log.d(TAG, "PUSH ERROR: " + error);
     }
 }

@@ -8,7 +8,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-//instantite express application
+//instantiate express application
 let app = express();
 
 //use body parser

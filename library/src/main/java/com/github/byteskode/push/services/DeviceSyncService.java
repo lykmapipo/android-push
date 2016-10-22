@@ -1,5 +1,7 @@
 package com.github.byteskode.push.services;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.api.Device;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -56,8 +58,13 @@ public class DeviceSyncService extends GcmTaskService {
 
                 if ((response != null)) {
                     if (response.isSuccessful()) {
-                        //TODO notify new registration token received
                         result = GcmNetworkManager.RESULT_SUCCESS;
+
+                        //notify registration token updated or created successfully
+                        Intent intent = new Intent(Push.REGISTRATION_TOKEN_REFRESHED);
+                        intent.putExtra("success", true);
+                        LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(intent);
+
                     } else {
                         //reschedule push device details sync
                         result = GcmNetworkManager.RESULT_RESCHEDULE;
@@ -69,8 +76,16 @@ public class DeviceSyncService extends GcmTaskService {
             return result;
 
         } catch (Exception e) {
+
+            //notify registration token update or create error
+            Intent intent = new Intent(Push.REGISTRATION_TOKEN_REFRESHED);
+            intent.putExtra("success", false);
+            intent.putExtra("message", e.getMessage());
+            LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(intent);
+
             //reschedule push device details sync in case of any exception
             return GcmNetworkManager.RESULT_RESCHEDULE;
+
         }
     }
 }

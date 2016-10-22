@@ -1,12 +1,12 @@
 package com.github.byteskode.push;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Base64;
 import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.api.DeviceApi;
@@ -26,7 +26,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 
 /**
@@ -36,6 +35,12 @@ import java.util.UUID;
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
  */
 public class Push {
+    /**
+     * key used to signal device fcm registration token refresh
+     */
+    public static final String REGISTRATION_TOKEN_REFRESHED = "tokenRefreshed";
+
+
     /**
      * key used to stoke latest fcm registration token
      */
@@ -122,6 +127,16 @@ public class Push {
      */
     private PushMessageListener pushMessageListener;
 
+    /**
+     * push token listener
+     */
+    private PushTokenListener pushTokenListener;
+
+    /**
+     * listen to registration token broadcast
+     */
+    private BroadcastReceiver registrationTokenReceiver;
+
 
     /**
      * Private constructor
@@ -199,6 +214,38 @@ public class Push {
             deviceApi = retrofit.create(DeviceApi.class);
         }
 
+        //initialize local broadcast receiver to listen for token refresh
+        registerTokenReceiver();
+    }
+
+    private void registerTokenReceiver() {
+        if (registrationTokenReceiver == null) {
+            registrationTokenReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    //check for success synced registration token
+                    boolean isSuccess = intent.getBooleanExtra("success", false);
+
+                    //notify token push listener
+                    if (pushTokenListener != null) {
+                        //notify success token refresh listener
+                        if (isSuccess) {
+                            pushTokenListener.onRegistrationTokenRefreshed(getDevice());
+                        }
+                        //notify token refresh error listener
+                        else {
+                            String errorMessage = intent.getStringExtra("message");
+                            pushTokenListener.onRegistrationTokenError(errorMessage);
+                        }
+                    }
+                }
+            };
+
+            LocalBroadcastManager.getInstance(context).registerReceiver(
+                    registrationTokenReceiver,
+                    new IntentFilter(REGISTRATION_TOKEN_REFRESHED)
+            );
+        }
     }
 
 
@@ -261,6 +308,22 @@ public class Push {
      */
     public void unregisterPushMessageListener() {
         this.pushMessageListener = null;
+    }
+
+    /**
+     * register push token listener
+     *
+     * @param pushTokenListener
+     */
+    public void registerPushTokenListener(PushTokenListener pushTokenListener) {
+        this.pushTokenListener = pushTokenListener;
+    }
+
+    /**
+     * register push token listener
+     */
+    public void unregisterPushTokenListener() {
+        this.pushTokenListener = null;
     }
 
     /**
@@ -461,7 +524,7 @@ public class Push {
     public Response<Device> create(String registrationToken) throws IOException {
         if (this.deviceApi != null && this.isConnected()) {
             //prepare device
-            Device device = new Device(this.getUUID(), this.getInstanceId(), registrationToken, this.getTopics());
+            Device device = getDevice(registrationToken);
 
             //prepare authorization header value
             String authorization = "Bearer " + this.getApiAuthorizationToken();
@@ -475,6 +538,14 @@ public class Push {
         }
     }
 
+    private Device getDevice(String registrationToken) {
+        return new Device(this.getUUID(), this.getInstanceId(), registrationToken, this.getTopics());
+    }
+
+    private Device getDevice() {
+        return new Device(this.getUUID(), this.getInstanceId(), this.getRegistrationToken(), this.getTopics());
+    }
+
 
     /**
      * update existing device push registration details in remote api server(app server)
@@ -486,7 +557,7 @@ public class Push {
     public Response<Device> update(String registrationToken) throws IOException {
         if (this.deviceApi != null && this.isConnected()) {
             //prepare device
-            Device device = new Device(this.getUUID(), this.getInstanceId(), registrationToken, this.getTopics());
+            Device device = getDevice(registrationToken);
 
             //prepare authorization header value
             String authorization = "Bearer " + this.getApiAuthorizationToken();
