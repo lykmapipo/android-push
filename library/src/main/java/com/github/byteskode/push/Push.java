@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.api.DeviceApi;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -20,8 +22,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -100,6 +105,11 @@ public class Push {
      * device api used to sync device push details to remove server
      */
     private DeviceApi deviceApi;
+
+    /**
+     * unique device identifier based on hardware details
+     */
+    private String uuid;
 
 
     /**
@@ -189,6 +199,43 @@ public class Push {
             deviceApi = retrofit.create(DeviceApi.class);
         }
 
+    }
+
+
+    /**
+     * Returns a generated unique pseudo ID from android.os.Build Constants
+     *
+     * @return a pseudo id
+     */
+    public String getUUID() {
+        if ((uuid != null) && !uuid.isEmpty()) {
+            return uuid;
+        } else {
+
+            //sc7730s:samsung:grandneove3g:samsung:GT-I9060I:grandneove3gxx:4d006971d08a4200:KTU84P.I9060IXXU0APG1:I9060IXXU0APG1
+            StringBuilder uuid = new StringBuilder();
+            uuid.append(context.getPackageName()).append(":"); //name of this application's package
+            uuid.append(Build.BOARD).append(":"); //underlying board
+            uuid.append(Build.BRAND).append(":"); //consumer-visible brand with which the product/hardware will be associated, if any
+            uuid.append(Build.DEVICE).append(":"); //name of industrial design
+            uuid.append(Build.MANUFACTURER).append(":"); //manufacturer of the product/hardware
+            uuid.append(Build.MODEL).append(":"); //end-user-visible name for the end product
+            uuid.append(Build.PRODUCT).append(":"); //name of the overall product
+            uuid.append(Build.SERIAL).append(":"); //hardware serial number
+            uuid.append(Build.DISPLAY).append(":"); //build ID string meant for displaying to the user
+            uuid.append(Build.BOOTLOADER);//system bootloader version number
+
+            //hash the uuid
+            try {
+                MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+                messageDigest.update(uuid.toString().getBytes());
+                this.uuid = Base64.encodeToString(messageDigest.digest(), Base64.DEFAULT);
+            } catch (NoSuchAlgorithmException e) {
+                this.uuid = Base64.encodeToString(uuid.toString().getBytes(), Base64.DEFAULT);
+            }
+
+            return this.uuid;
+        }
     }
 
     /**
@@ -479,7 +526,6 @@ public class Push {
      * clear push shared preferences
      */
     public void clear() {
-
         //clear all push preferences
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(REGISTRATION_TOKEN_PREF_KEY);
@@ -488,7 +534,6 @@ public class Push {
         editor.remove(API_BASE_URL_PREF_KEY);
         editor.remove(API_AUTHORIZATION_TOKEN_PREF_KEY);
         editor.apply();
-
     }
 
 }

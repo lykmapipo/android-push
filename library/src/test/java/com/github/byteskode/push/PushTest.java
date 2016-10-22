@@ -49,6 +49,18 @@ public class PushTest {
     }
 
     @Test
+    public void shouldBeAbleToGetDeviceUUID(){
+        Push push = Push.getInstance();
+
+        String uuid1 = push.getUUID();
+        String uuid2 = push.getUUID();
+
+        assertThat(uuid1, is(not(equalTo(null))));
+        assertThat(uuid2, is(not(equalTo(null))));
+        assertThat(uuid1, is(equalTo(uuid2)));
+    }
+
+    @Test
     public void shouldBeAbleToInitializeDeviceApi() {
 
         Push push = Push.getInstance();

@@ -32,6 +32,9 @@ public class MainActivity extends Activity implements PushMessageListener {
             }
         }
 
+        Log.d(TAG, "UUID x1:" + Push.getInstance().getUUID());
+        Log.d(TAG, "UUID x2:" + Push.getInstance().getUUID());
+
         Push.getInstance().registerPushMessageListener(this);
     }
 
