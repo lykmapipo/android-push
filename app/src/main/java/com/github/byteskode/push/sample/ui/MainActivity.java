@@ -36,6 +36,7 @@ public class MainActivity extends Activity implements PushMessageListener, PushT
 
         Log.d(TAG, "UUID x1:" + Push.getInstance().getUUID());
         Log.d(TAG, "UUID x2:" + Push.getInstance().getUUID());
+        Log.d(TAG, "Token:" + Push.getInstance().getRegistrationToken());
 
         Push.getInstance().registerPushMessageListener(this);
         Push.getInstance().registerPushTokenListener(this);
@@ -56,12 +57,12 @@ public class MainActivity extends Activity implements PushMessageListener, PushT
 
     @Override
     public void onMessage(RemoteMessage remoteMessage) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(MainActivity.this, "Push Received", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Log.d(TAG, "Message From: " + remoteMessage.getFrom());
+        Log.d(TAG, "Message To: " + remoteMessage.getTo());
+        Log.d(TAG, "Message Type: " + remoteMessage.getMessageType());
+        Log.d(TAG, "Message Data: " + remoteMessage.getData());
+        Log.d(TAG, "Message Notification: " + remoteMessage.getNotification());
+        Toast.makeText(MainActivity.this, "Push Received", Toast.LENGTH_SHORT).show();
     }
 
     @Override

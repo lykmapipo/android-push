@@ -40,6 +40,11 @@ public class Push {
      */
     public static final String REGISTRATION_TOKEN_REFRESHED = "tokenRefreshed";
 
+    /**
+     * key used to signal new received push message
+     */
+    public static final String PUSH_MESSAGE_RECEIVED = "pushMessageReceived";
+
 
     /**
      * key used to stoke latest fcm registration token
@@ -137,6 +142,11 @@ public class Push {
      */
     private BroadcastReceiver registrationTokenReceiver;
 
+    /**
+     * listen to push message
+     */
+    private BroadcastReceiver messageReceiver;
+
 
     /**
      * Private constructor
@@ -216,6 +226,9 @@ public class Push {
 
         //initialize local broadcast receiver to listen for token refresh
         registerTokenReceiver();
+
+        //initialize local broadcast receiver to listen for push message
+        registerMessageReceiver();
     }
 
     private void registerTokenReceiver() {
@@ -244,6 +257,28 @@ public class Push {
             LocalBroadcastManager.getInstance(context).registerReceiver(
                     registrationTokenReceiver,
                     new IntentFilter(REGISTRATION_TOKEN_REFRESHED)
+            );
+        }
+    }
+
+    private void registerMessageReceiver() {
+        if (messageReceiver == null) {
+            messageReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    //obtain remote message
+                    RemoteMessage message = (RemoteMessage) intent.getParcelableExtra("message");
+
+                    //notify push message listener
+                    if (pushMessageListener != null) {
+                        pushMessageListener.onMessage(message);
+                    }
+                }
+            };
+
+            LocalBroadcastManager.getInstance(context).registerReceiver(
+                    messageReceiver,
+                    new IntentFilter(PUSH_MESSAGE_RECEIVED)
             );
         }
     }
@@ -502,15 +537,8 @@ public class Push {
      */
     public void send(RemoteMessage message) {
         //TODO implement sent and error callback
+        //TODO send message to api server
         FirebaseMessaging.getInstance().send(message);
-    }
-
-
-    public void onPushNotification(RemoteMessage message) {
-        //TODO handle topic message and dispatch them to specific listener
-        if (this.pushMessageListener != null) {
-            pushMessageListener.onMessage(message);
-        }
     }
 
 

@@ -1,5 +1,7 @@
 package com.github.byteskode.push.services;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import com.github.byteskode.push.Push;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -20,7 +22,9 @@ public class PushMessagingService extends FirebaseMessagingService {
      */
     @Override
     public void onMessageReceived(RemoteMessage message) {
-        Push push = Push.getInstance();
-        push.onPushNotification(message);
+        //broadcast received push message
+        Intent intent = new Intent(Push.PUSH_MESSAGE_RECEIVED);
+        intent.putExtra("message", message);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 }
