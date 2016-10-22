@@ -461,7 +461,7 @@ public class Push {
     public Response<Device> create(String registrationToken) throws IOException {
         if (this.deviceApi != null && this.isConnected()) {
             //prepare device
-            Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
+            Device device = new Device(this.getUUID(), this.getInstanceId(), registrationToken, this.getTopics());
 
             //prepare authorization header value
             String authorization = "Bearer " + this.getApiAuthorizationToken();
@@ -486,7 +486,7 @@ public class Push {
     public Response<Device> update(String registrationToken) throws IOException {
         if (this.deviceApi != null && this.isConnected()) {
             //prepare device
-            Device device = new Device(this.getInstanceId(), registrationToken, this.getTopics());
+            Device device = new Device(this.getUUID(), this.getInstanceId(), registrationToken, this.getTopics());
 
             //prepare authorization header value
             String authorization = "Bearer " + this.getApiAuthorizationToken();

@@ -16,6 +16,10 @@ import java.util.Set;
 public class Device implements Serializable {
 
     @Expose
+    @SerializedName("uuid")
+    private String uuid;
+
+    @Expose
     @SerializedName("instanceId")
     private String instanceId;
 
@@ -30,10 +34,19 @@ public class Device implements Serializable {
     public Device() {
     }
 
-    public Device(String instanceId, String registrationToken, Set<String> topics) {
+    public Device(String uuid, String instanceId, String registrationToken, Set<String> topics) {
+        this.uuid = uuid;
         this.instanceId = instanceId;
         this.registrationToken = registrationToken;
         this.topics = topics;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getInstanceId() {
