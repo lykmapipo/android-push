@@ -212,7 +212,7 @@ public class Push {
             return uuid;
         } else {
 
-            //sc7730s:samsung:grandneove3g:samsung:GT-I9060I:grandneove3gxx:4d006971d08a4200:KTU84P.I9060IXXU0APG1:I9060IXXU0APG1
+            //prepare device uuid
             StringBuilder uuid = new StringBuilder();
             uuid.append(context.getPackageName()).append(":"); //name of this application's package
             uuid.append(Build.BOARD).append(":"); //underlying board

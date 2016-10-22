@@ -1,7 +1,7 @@
 byteskode-android-push(WIP)
 =========================
 
-[![](https://jitpack.io/v/lykmapipo/byteskode-android-push.svg)](https://jitpack.io/#lykmapipo/byteskode-android-push)
+[![](https://jitpack.io/v/byteskode/byteskode-android-push.svg)](https://jitpack.io/#byteskode/byteskode-android-push)
 
 
 byteskode push - Android FCM library
@@ -19,7 +19,7 @@ add `byteskode-android-push` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.lykmapipo:byteskode-android-push:v0.1.0'
+    compile 'com.github.byteskode:byteskode-android-push:v0.1.0'
 }
 ```
 
