@@ -10,6 +10,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Base64;
 import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.api.DeviceApi;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
@@ -634,6 +636,21 @@ public class Push {
 
         return false;
 
+    }
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK
+     */
+    public boolean isGooglePlayServiceAvailable() {
+
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int status = api.isGooglePlayServicesAvailable(this.context);
+
+        if (status == ConnectionResult.SUCCESS) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

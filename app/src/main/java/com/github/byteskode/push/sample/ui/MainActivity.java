@@ -1,18 +1,17 @@
 package com.github.byteskode.push.sample.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import com.github.byteskode.push.Push;
-import com.github.byteskode.push.PushMessageListener;
-import com.github.byteskode.push.PushTokenListener;
 import com.github.byteskode.push.api.Device;
 import com.github.byteskode.push.sample.R;
+import com.github.byteskode.push.ui.PushCompactActivity;
 import com.google.firebase.messaging.RemoteMessage;
 
 
-public class MainActivity extends Activity implements PushMessageListener, PushTokenListener {
+public class MainActivity extends PushCompactActivity {
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override

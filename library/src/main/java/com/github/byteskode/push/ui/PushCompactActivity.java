@@ -1,11 +1,14 @@
 package com.github.byteskode.push.ui;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.PushMessageListener;
 import com.github.byteskode.push.PushTokenListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 /**
  * base push aware compact activity
@@ -17,26 +20,28 @@ import com.github.byteskode.push.PushTokenListener;
 public abstract class PushCompactActivity extends AppCompatActivity
         implements PushMessageListener, PushTokenListener {
 
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-
-        Push push = Push.getInstance();
-
-        //register listeners
-        push.registerPushMessageListener(this);
-        push.registerPushTokenListener(this);
+        register();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        register();
+    }
 
-        Push push = Push.getInstance();
+    private void register() {
+        if (hasPlayServices()) {
+            Push push = Push.getInstance();
 
-        //register listeners
-        push.registerPushMessageListener(this);
-        push.registerPushTokenListener(this);
+            //register listeners
+            push.registerPushMessageListener(this);
+            push.registerPushTokenListener(this);
+        }
     }
 
     @Override
@@ -49,5 +54,31 @@ public abstract class PushCompactActivity extends AppCompatActivity
         push.unregisterPushMessageListener(this);
         push.unregisterPushTokenListener(this);
 
+    }
+
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean hasPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+
+        if (resultCode != ConnectionResult.SUCCESS) {
+
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                Dialog errorDialog =
+                        apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST);
+                errorDialog.show();
+            } else {
+                finish();
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }
