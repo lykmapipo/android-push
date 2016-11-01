@@ -21,7 +21,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
     compile "com.google.android.gms:play-services-base:${FCM_VERSION}"
-    compile "com.google.android.gms:play-services-gcm:${FCM_VERSION}"
     compile "com.google.firebase:firebase-messaging:${FCM_VERSION}"
     compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"

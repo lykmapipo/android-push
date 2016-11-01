@@ -51,8 +51,8 @@ public class MainActivity extends Activity implements PushMessageListener, PushT
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Push.getInstance().unregisterPushMessageListener();
-        Push.getInstance().unregisterPushTokenListener();
+        Push.getInstance().unregisterPushMessageListener(this);
+        Push.getInstance().unregisterPushTokenListener(this);
     }
 
     @Override

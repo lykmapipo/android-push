@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -130,12 +132,12 @@ public class Push {
     /**
      * push message listener
      */
-    private PushMessageListener pushMessageListener;
+    private Set<PushMessageListener> pushMessageListeners;
 
     /**
      * push token listener
      */
-    private PushTokenListener pushTokenListener;
+    private Set<PushTokenListener> pushTokenListeners;
 
     /**
      * listen to registration token broadcast
@@ -240,15 +242,17 @@ public class Push {
                     boolean isSuccess = intent.getBooleanExtra("success", false);
 
                     //notify token push listener
-                    if (pushTokenListener != null) {
-                        //notify success token refresh listener
-                        if (isSuccess) {
-                            pushTokenListener.onRegistrationTokenRefreshed(getDevice());
-                        }
-                        //notify token refresh error listener
-                        else {
-                            String errorMessage = intent.getStringExtra("message");
-                            pushTokenListener.onRegistrationTokenError(errorMessage);
+                    if (pushTokenListeners != null && !pushTokenListeners.isEmpty()) {
+                        for (PushTokenListener pushTokenListener : pushTokenListeners) {
+                            //notify success token refresh listener
+                            if (isSuccess) {
+                                pushTokenListener.onRegistrationTokenRefreshed(getDevice());
+                            }
+                            //notify token refresh error listener
+                            else {
+                                String errorMessage = intent.getStringExtra("message");
+                                pushTokenListener.onRegistrationTokenError(errorMessage);
+                            }
                         }
                     }
                 }
@@ -269,9 +273,11 @@ public class Push {
                     //obtain remote message
                     RemoteMessage message = (RemoteMessage) intent.getParcelableExtra("message");
 
-                    //notify push message listener
-                    if (pushMessageListener != null) {
-                        pushMessageListener.onMessage(message);
+                    if ((pushMessageListeners != null) && !pushMessageListeners.isEmpty()) {
+                        for (PushMessageListener pushMessageListener : pushMessageListeners) {
+                            //notify push message listener
+                            pushMessageListener.onMessage(message);
+                        }
                     }
                 }
             };
@@ -335,14 +341,19 @@ public class Push {
      * @param listener
      */
     public void registerPushMessageListener(PushMessageListener listener) {
-        this.pushMessageListener = listener;
+        if (this.pushMessageListeners == null) {
+            this.pushMessageListeners = new HashSet<PushMessageListener>();
+        }
+        this.pushMessageListeners.add(listener);
     }
 
     /**
      * unregister push notification message listener
      */
-    public void unregisterPushMessageListener() {
-        this.pushMessageListener = null;
+    public void unregisterPushMessageListener(PushMessageListener pushMessageListener) {
+        if (this.pushMessageListeners != null) {
+            this.pushMessageListeners.remove(pushMessageListener);
+        }
     }
 
     /**
@@ -351,14 +362,19 @@ public class Push {
      * @param pushTokenListener
      */
     public void registerPushTokenListener(PushTokenListener pushTokenListener) {
-        this.pushTokenListener = pushTokenListener;
+        if (this.pushTokenListeners == null) {
+            this.pushTokenListeners = new HashSet<PushTokenListener>();
+        }
+        this.pushTokenListeners.add(pushTokenListener);
     }
 
     /**
      * register push token listener
      */
-    public void unregisterPushTokenListener() {
-        this.pushTokenListener = null;
+    public void unregisterPushTokenListener(PushTokenListener pushTokenListener) {
+        if (this.pushTokenListeners != null) {
+            this.pushTokenListeners.remove(pushTokenListener);
+        }
     }
 
     /**
