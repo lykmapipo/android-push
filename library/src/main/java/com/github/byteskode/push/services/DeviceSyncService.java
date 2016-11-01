@@ -1,12 +1,11 @@
 package com.github.byteskode.push.services;
 
+import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.api.Device;
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.GcmTaskService;
-import com.google.android.gms.gcm.TaskParams;
+import com.github.byteskode.push.receivers.NetworkChangeReceiver;
 import com.google.firebase.iid.FirebaseInstanceId;
 import retrofit2.Response;
 
@@ -17,12 +16,16 @@ import retrofit2.Response;
  * @email lallyelias87@gmail.com, lally.elias@byteskode.com
  * @date 10/18/16
  */
-public class DeviceSyncService extends GcmTaskService {
+public class DeviceSyncService extends IntentService {
 
-    public static final String TASK_TAG = "deviceSync";
+    public static final String TAG = DeviceSyncService.class.getSimpleName();
+
+    public DeviceSyncService() {
+        super(TAG);
+    }
 
     @Override
-    public int onRunTask(TaskParams taskParams) {
+    protected void onHandleIntent(Intent intent) {
         try {
             //obtain push instance
             Push push = Push.getInstance();
@@ -35,9 +38,6 @@ public class DeviceSyncService extends GcmTaskService {
 
             //check if token are different for updates
             boolean shouldUpdateServerToken = !currentRegistrationToken.equals(latestRegistrationToken);
-
-            //prepare task result
-            int result = GcmNetworkManager.RESULT_SUCCESS;
 
             if (shouldUpdateServerToken) {
                 //save or update current device registration token
@@ -56,35 +56,29 @@ public class DeviceSyncService extends GcmTaskService {
                     response = push.update(latestRegistrationToken);
                 }
 
-                if ((response != null)) {
-                    if (response.isSuccessful()) {
-                        result = GcmNetworkManager.RESULT_SUCCESS;
+                if ((response != null) && response.isSuccessful()) {
 
-                        //notify registration token updated or created successfully
-                        Intent intent = new Intent(Push.REGISTRATION_TOKEN_REFRESHED);
-                        intent.putExtra("success", true);
-                        LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(intent);
+                    //notify registration token updated or created successfully
+                    Intent successIntent = new Intent(Push.REGISTRATION_TOKEN_REFRESHED);
+                    successIntent.putExtra("success", true);
+                    LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(successIntent);
 
-                    } else {
-                        //reschedule push device details sync
-                        result = GcmNetworkManager.RESULT_RESCHEDULE;
-                    }
                 }
-
             }
 
-            return result;
+            //finish syncing device details
+            NetworkChangeReceiver.completeWakefulIntent(intent);
 
         } catch (Exception e) {
 
             //notify registration token update or create error
-            Intent intent = new Intent(Push.REGISTRATION_TOKEN_REFRESHED);
-            intent.putExtra("success", false);
-            intent.putExtra("message", e.getMessage());
-            LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(intent);
+            Intent failIntent = new Intent(Push.REGISTRATION_TOKEN_REFRESHED);
+            failIntent.putExtra("success", false);
+            failIntent.putExtra("message", e.getMessage());
+            LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(failIntent);
 
             //reschedule push device details sync in case of any exception
-            return GcmNetworkManager.RESULT_RESCHEDULE;
+            NetworkChangeReceiver.completeWakefulIntent(intent);
 
         }
     }

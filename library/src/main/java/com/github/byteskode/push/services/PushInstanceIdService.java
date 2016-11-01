@@ -1,8 +1,7 @@
 package com.github.byteskode.push.services;
 
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.OneoffTask;
-import com.google.android.gms.gcm.Task;
+import android.content.Intent;
+import com.github.byteskode.push.Push;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
 /**
@@ -14,23 +13,19 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
  */
 public class PushInstanceIdService extends FirebaseInstanceIdService {
 
-
     /**
      * Called if InstanceID token is updated or generated for the first time.
      */
     @Override
     public void onTokenRefresh() {
 
-        //prepare device details sync task
-        OneoffTask deviceSyncTask = new OneoffTask.Builder()
-                .setService(DeviceSyncService.class)
-                .setExecutionWindow(0L, 30L)
-                .setTag(DeviceSyncService.TASK_TAG)
-                .setRequiredNetwork(Task.NETWORK_STATE_CONNECTED)
-                .build();
+        Push push = Push.getInstance();
+        boolean isConnected = push.isConnected();
 
-        //schedule push device details sync task
-        GcmNetworkManager.getInstance(getApplicationContext()).schedule(deviceSyncTask);
+        if (isConnected) {
+            Intent service = new Intent(getApplicationContext(), DeviceSyncService.class);
+            startService(service);
+        }
 
     }
 }

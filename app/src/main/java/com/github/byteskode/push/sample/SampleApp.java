@@ -14,6 +14,6 @@ public class SampleApp extends Application {
         super.onCreate();
 
         //TODO replace with your baseUrl and registration token
-        Push.initialize(this, "http:/192.168.43.140:3000", "622hs4853YtWT1Pa7");
+        Push.initialize(this, "http://192.168.1.102:3000", "622hs4853YtWT1Pa7");
     }
 }
