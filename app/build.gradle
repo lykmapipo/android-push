@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 25
 
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "25.0.2"
 
     lintOptions {
         abortOnError false
@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.github.byteskode.push.sample"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }
