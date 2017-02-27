@@ -11,6 +11,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -167,6 +168,13 @@ public class PushTest {
         boolean connected = push.isConnected();
 
         assertThat(connected, equalTo(true));
+    }
+
+    @Test
+    public void shouldBeAbleToSaveDeviceExtra() {
+        Push push = Push.getInstance();
+        Map<String, String> extras = push.putExtra("phone", "11111111111");
+        assertThat(extras.get("phone"), equalTo("11111111111"));
     }
 
     @After

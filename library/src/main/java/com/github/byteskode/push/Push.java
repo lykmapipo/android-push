@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -69,6 +69,12 @@ public class Push {
 
 
     /**
+     * key used to store application specific details about the device(installation)
+     */
+    public static final String EXTRAS_PREF_KEY = "extras";
+
+
+    /**
      * key used to store api server end point to post and update device push details
      */
     public static final String API_BASE_URL_PREF_KEY = "apiBaseUrl";
@@ -97,6 +103,10 @@ public class Push {
      */
     private Set<String> topics = new HashSet<String>();
 
+    /**
+     * map of application extra details about the device(installation)
+     */
+    private Map<String, String> extras = new HashMap<String, String>();
 
     /**
      * latest push registration token
@@ -517,6 +527,86 @@ public class Push {
 
 
     /**
+     * set application extra details on a push device
+     *
+     * @param extras
+     * @return
+     */
+    public Map<String, String> setExtras(Map<String, String> extras) {
+        //obtain existing extras
+        Map<String, String> _extras = getExtras();
+
+        //merge with process extras
+        try {
+
+            _extras.putAll(extras);
+
+            //save extras as key:value in extra set
+            Set<String> extraSet = new HashSet<>();
+            for (String key : _extras.keySet()) {
+                String extra = key + ":" + _extras.get(key);
+                extraSet.add(extra);
+            }
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putStringSet(EXTRAS_PREF_KEY, extraSet);
+            editor.apply();
+
+        } catch (Exception e) {
+        }
+
+        return _extras;
+    }
+
+
+    /**
+     * add application specific extra details
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Map<String, String> putExtra(String key, String value) {
+        Map<String, String> extras = new HashMap<String, String>();
+
+        if ((key != null && !key.isEmpty()) && (value != null && !value.isEmpty())) {
+            extras.put(key, value);
+        }
+
+        //update extras
+        extras = setExtras(extras);
+
+        return extras;
+    }
+
+    /**
+     * obtain device(installation) extra details
+     *
+     * @return topics
+     */
+    public Map<String, String> getExtras() {
+        HashMap<String, String> extras = new HashMap<String, String>();
+
+        Set<String> extraSet = preferences.getStringSet(EXTRAS_PREF_KEY, new HashSet<String>());
+
+        for (String extra : extraSet) {
+
+            //split to obtain key value
+            try {
+                String[] splits = extra.split(":");
+                if (splits != null && splits.length == 2) {
+                    extras.put(splits[0], splits[1]);
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        return extras;
+
+    }
+
+
+    /**
      * Save device push registration token in shared preferences
      *
      * @param token
@@ -585,11 +675,13 @@ public class Push {
     }
 
     private Device getDevice(String registrationToken) {
-        return new Device(this.getUUID(), this.getInstanceId(), registrationToken, this.getTopics());
+        return new Device(this.getUUID(), this.getInstanceId(), registrationToken,
+                this.getTopics(), this.getExtras());
     }
 
     private Device getDevice() {
-        return new Device(this.getUUID(), this.getInstanceId(), this.getRegistrationToken(), this.getTopics());
+        return new Device(this.getUUID(), this.getInstanceId(), this.getRegistrationToken(),
+                this.getTopics(), this.getExtras());
     }
 
 
@@ -663,6 +755,7 @@ public class Push {
         editor.remove(REGISTRATION_TOKEN_PREF_KEY);
         editor.remove(INSTANCE_ID_PREF_KEY);
         editor.remove(TOPICS_PREF_KEY);
+        editor.remove(EXTRAS_PREF_KEY);
         editor.remove(API_BASE_URL_PREF_KEY);
         editor.remove(API_AUTHORIZATION_TOKEN_PREF_KEY);
         editor.apply();

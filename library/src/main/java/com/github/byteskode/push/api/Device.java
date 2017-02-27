@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,6 +32,10 @@ public class Device implements Serializable {
     @SerializedName("topics")
     private Set<String> topics;
 
+    @Expose
+    @SerializedName("extras")
+    private Map<String, String> extras;
+
     public Device() {
     }
 
@@ -39,6 +44,15 @@ public class Device implements Serializable {
         this.instanceId = instanceId;
         this.registrationToken = registrationToken;
         this.topics = topics;
+    }
+
+    public Device(String uuid, String instanceId, String registrationToken,
+                  Set<String> topics, Map<String, String> extras) {
+        this.uuid = uuid;
+        this.instanceId = instanceId;
+        this.registrationToken = registrationToken;
+        this.topics = topics;
+        this.extras = extras;
     }
 
     public String getUuid() {
@@ -71,5 +85,13 @@ public class Device implements Serializable {
 
     public void setTopics(Set<String> topics) {
         this.topics = topics;
+    }
+
+    public Map<String, String> getExtras() {
+        return extras;
+    }
+
+    public void setExtras(Map<String, String> extras) {
+        this.extras = extras;
     }
 }
