@@ -50,7 +50,7 @@ public class PushTest {
     }
 
     @Test
-    public void shouldBeAbleToGetDeviceUUID(){
+    public void shouldBeAbleToGetDeviceUUID() {
         Push push = Push.getInstance();
 
         String uuid1 = push.getUUID();
@@ -174,6 +174,14 @@ public class PushTest {
     public void shouldBeAbleToSaveDeviceExtra() {
         Push push = Push.getInstance();
         Map<String, String> extras = push.putExtra("phone", "11111111111");
+        assertThat(extras.get("phone"), equalTo("11111111111"));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceExtras() {
+        Push push = Push.getInstance();
+        push.putExtra("phone", "11111111111");
+        Map<String, String> extras = push.getExtras();
         assertThat(extras.get("phone"), equalTo("11111111111"));
     }
 
