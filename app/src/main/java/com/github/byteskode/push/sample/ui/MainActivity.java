@@ -37,21 +37,18 @@ public class MainActivity extends PushCompactActivity {
         Log.d(TAG, "UUID x2:" + Push.getInstance().getUUID());
         Log.d(TAG, "Token:" + Push.getInstance().getRegistrationToken());
 
-        Push.getInstance().registerPushMessageListener(this);
-        Push.getInstance().registerPushTokenListener(this);
+        //Force device sync
+//        Push.getInstance().sync("phone", "255714999999");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Push.getInstance().registerPushMessageListener(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Push.getInstance().unregisterPushMessageListener(this);
-        Push.getInstance().unregisterPushTokenListener(this);
     }
 
     @Override
@@ -78,8 +75,10 @@ public class MainActivity extends PushCompactActivity {
 
     @Override
     public void onDeviceSynced(Device device) {
-        Log.d(TAG, "DEVICE UUID: " + device.getUuid());
-        Log.d(TAG, "DEVICE Registration Token: " + device.getRegistrationToken());
-        Log.d(TAG, "DEVICE Registration InstanceID: " + device.getInstanceId());
+        Log.d(TAG, "Synced DEVICE UUID: " + device.getUuid());
+        Log.d(TAG, "Synced DEVICE Registration Token: " + device.getRegistrationToken());
+        Log.d(TAG, "Synced DEVICE Registration InstanceID: " + device.getInstanceId());
+        Log.d(TAG, "Synced DEVICE Extras: " + device.getExtras());
+
     }
 }

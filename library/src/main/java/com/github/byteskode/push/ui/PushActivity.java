@@ -42,6 +42,7 @@ public abstract class PushActivity extends Activity
             //register listeners
             push.registerPushMessageListener(this);
             push.registerPushTokenListener(this);
+            push.registerDeviceSyncListener(this);
         }
     }
 
@@ -54,6 +55,7 @@ public abstract class PushActivity extends Activity
         //unregister listener
         push.unregisterPushMessageListener(this);
         push.unregisterPushTokenListener(this);
+        push.unregisterDeviceSyncListener(this);
 
     }
 

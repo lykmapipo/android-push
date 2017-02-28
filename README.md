@@ -76,8 +76,18 @@ public class MainActivity extends PushCompactActivity {
      public void onRegistrationTokenError(String error) {
         ...
      }
+     
+     @Override
+      public void onDeviceSynced(Device device) {
+        ...
+      }
 }
 ```
+
+## Android API
+
+### Force Device Sync with Extra Details
+To save application specific extra details you may call `push.sync(<extraKey>, <extraValue>)`
 
 ## API Server Implementation
 

@@ -42,6 +42,7 @@ public abstract class PushCompactActivity extends AppCompatActivity
             //register listeners
             push.registerPushMessageListener(this);
             push.registerPushTokenListener(this);
+            push.registerDeviceSyncListener(this);
         }
     }
 
@@ -54,6 +55,7 @@ public abstract class PushCompactActivity extends AppCompatActivity
         //unregister listener
         push.unregisterPushMessageListener(this);
         push.unregisterPushTokenListener(this);
+        push.unregisterDeviceSyncListener(this);
 
     }
 
