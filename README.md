@@ -87,7 +87,23 @@ public class MainActivity extends PushCompactActivity {
 ## Android API
 
 ### Force Device Sync with Extra Details
-To save application specific extra details you may call `push.sync(<extraKey>, <extraValue>)`
+To force sync application specific extra details you may call `push.sync(<extraKey>, <extraValue>)` or `push.sync(mapOfExtras)`
+ which will force syncing the device details to your backend api.
+
+All extras will be send under `extras` field of the device details sent to the server.
+
+Example
+```json
+{ 
+  extras: { 
+      phone: '255714999999' 
+   },
+  instanceId: <firebaseInstanceId>,
+  registrationToken: <firebasePushRegistrationToken>,
+  topics: [], //list of topic device subscribe to
+  uuid: <uniquePseudoId> 
+}
+```
 
 ## API Server Implementation
 

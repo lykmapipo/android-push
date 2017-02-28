@@ -787,16 +787,16 @@ public class Push {
     /**
      * sync device details to backend api
      *
-     * @param key
-     * @param value
+     * @param extraKey
+     * @param extraValue
      * @return
      */
-    public Device sync(String key, String value) {
+    public Device sync(String extraKey, String extraValue) {
 
         Map<String, String> extras = new HashMap<String, String>();
 
-        if ((key != null && !key.isEmpty()) && (value != null && !value.isEmpty())) {
-            extras.put(key, value);
+        if ((extraKey != null && !extraKey.isEmpty()) && (extraValue != null && !extraValue.isEmpty())) {
+            extras.put(extraKey, extraValue);
         }
 
         Device device = sync(extras);
