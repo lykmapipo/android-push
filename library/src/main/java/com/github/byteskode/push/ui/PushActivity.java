@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import com.github.byteskode.push.DeviceSyncListener;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.PushMessageListener;
 import com.github.byteskode.push.PushTokenListener;
@@ -18,7 +19,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
  * @date 11/01/16
  */
 public abstract class PushActivity extends Activity
-        implements PushMessageListener, PushTokenListener {
+        implements PushMessageListener, PushTokenListener, DeviceSyncListener {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 

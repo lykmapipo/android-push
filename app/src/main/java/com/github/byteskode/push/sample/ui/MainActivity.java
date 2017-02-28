@@ -75,4 +75,11 @@ public class MainActivity extends PushCompactActivity {
     public void onRegistrationTokenError(String error) {
         Log.d(TAG, "PUSH ERROR: " + error);
     }
+
+    @Override
+    public void onDeviceSynced(Device device) {
+        Log.d(TAG, "DEVICE UUID: " + device.getUuid());
+        Log.d(TAG, "DEVICE Registration Token: " + device.getRegistrationToken());
+        Log.d(TAG, "DEVICE Registration InstanceID: " + device.getInstanceId());
+    }
 }

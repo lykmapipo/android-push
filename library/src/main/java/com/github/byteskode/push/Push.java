@@ -4,6 +4,7 @@ package com.github.byteskode.push;
 import android.content.*;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -150,6 +151,11 @@ public class Push {
      * push token listener
      */
     private Set<PushTokenListener> pushTokenListeners;
+
+    /**
+     * device sync listener
+     */
+    private Set<DeviceSyncListener> deviceSyncListeners;
 
     /**
      * listen to registration token broadcast
@@ -386,6 +392,28 @@ public class Push {
     public void unregisterPushTokenListener(PushTokenListener pushTokenListener) {
         if (this.pushTokenListeners != null) {
             this.pushTokenListeners.remove(pushTokenListener);
+        }
+    }
+
+    /**
+     * register device sync listener
+     *
+     * @param deviceSyncListener
+     */
+    public void registerDeviceSyncListener(DeviceSyncListener deviceSyncListener) {
+        if (this.deviceSyncListeners == null) {
+            this.deviceSyncListeners = new HashSet<DeviceSyncListener>();
+        }
+        this.deviceSyncListeners.add(deviceSyncListener);
+    }
+
+
+    /**
+     * register push token listener
+     */
+    public void unregisterDeviceSyncListener(DeviceSyncListener deviceSyncListener) {
+        if (this.deviceSyncListeners != null) {
+            this.deviceSyncListeners.remove(deviceSyncListener);
         }
     }
 
@@ -742,6 +770,76 @@ public class Push {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * sync device details to backend api
+     *
+     * @return
+     */
+    public Device sync() {
+        Map<String, String> extras = new HashMap<String, String>();
+        Device sync = sync(extras);
+        return sync;
+    }
+
+    /**
+     * sync device details to backend api
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Device sync(String key, String value) {
+
+        Map<String, String> extras = new HashMap<String, String>();
+
+        if ((key != null && !key.isEmpty()) && (value != null && !value.isEmpty())) {
+            extras.put(key, value);
+        }
+
+        Device device = sync(extras);
+
+        return device;
+    }
+
+    /**
+     * sync device details to backend api
+     *
+     * @param extras
+     * @return
+     */
+    public Device sync(Map<String, String> extras) {
+        try {
+            //update device extras
+            Map<String, String> _extras = setExtras(extras);
+
+            //TODO ensure internet connections before sync
+
+            //prepare device sync task
+            AsyncTask<Void, Void, Device> syncTask = new AsyncTask<Void, Void, Device>() {
+                @Override
+                protected Device doInBackground(Void... params) {
+                    final String registrationToken = getRegistrationToken();
+                    try {
+                        Response<Device> response = update(registrationToken);
+                        if (response != null && response.isSuccessful()) {
+                            return response.body();
+                        } else {
+                            return null;
+                        }
+                    } catch (IOException e) {
+                        return null;
+                    }
+                }
+            };
+
+            AsyncTask<Void, Void, Device> execute = syncTask.execute();
+            Device device = execute.get();
+            return device;
+        } catch (Exception e) {
+            return null;
         }
     }
 
