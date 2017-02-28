@@ -93,7 +93,7 @@ To force sync application specific extra details you may call `push.sync(<extraK
 All extras will be send under `extras` field of the device details sent to the server.
 
 Example
-```json
+```js
 { 
   extras: { 
       phone: '255714999999' 
