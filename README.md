@@ -113,6 +113,34 @@ API Server endpoint must implemnt `device REST aware resource` and support both 
 
 Authorization header is set with the value `Bearer <apiAuthorizationToken>` on every request sent.
 
+The structure of the information synced to the API end-point is as below:
+```js
+{
+    instanceId: String, //FCM instance id
+    registrationToken: String, //FCM devic registration token
+    topics: [String], //FCM device topic
+    uuid: String, // Generated device pseudocode
+    info:{ //device information
+       tags: String,
+       model: String,
+       hardware: String,
+       display: String,
+       board: String,
+       type: String,
+       product: String,
+       fingerprint: String,
+       manufacturer: String,
+       device: String,
+       brand: String,
+       sdk: String,
+       serial: String 
+    },
+    extras:{ //application specific extra details about the installation
+        
+    }
+}
+```
+
 
 ## Test
 ```sh
@@ -127,7 +155,7 @@ Do not forget to add a bit of test(s) of what value you adding.
 
 (The MIT License)
 
-Copyright (c) 2011 lykmapipo, byteskode Group && Contributors
+Copyright (c) 2016 lykmapipo, byteskode Group && Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
