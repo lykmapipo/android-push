@@ -74,6 +74,11 @@ public class Push {
      */
     public static final String EXTRAS_PREF_KEY = "extras";
 
+    /**
+     * key used to store application device information
+     */
+    public static final String INFO_PREF_KEY = "info";
+
 
     /**
      * key used to store api server end point to post and update device push details
@@ -553,6 +558,49 @@ public class Push {
         return topics;
     }
 
+    /**
+     * set application device info details
+     *
+     * @param info
+     * @return
+     */
+    public Map<String, String> setInfo(Map<String, String> info) {
+        //save and return device info
+        Map<String, String> _info = saveMapOfPreferences(INFO_PREF_KEY, info);
+        return _info;
+    }
+
+
+    /**
+     * add application specific device details
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Map<String, String> putInfo(String key, String value) {
+        Map<String, String> info = new HashMap<String, String>();
+
+        if ((key != null && !key.isEmpty()) && (value != null && !value.isEmpty())) {
+            info.put(key, value);
+        }
+
+        //update extras
+        info = setInfo(info);
+
+        return info;
+    }
+
+    /**
+     * obtain device(installation) extra details
+     *
+     * @return topics
+     */
+    public Map<String, String> getInfo() {
+        Map<String, String> info = getMapOfPreferences(INFO_PREF_KEY);
+        return info;
+    }
+
 
     /**
      * set application extra details on a push device
@@ -561,28 +609,8 @@ public class Push {
      * @return
      */
     public Map<String, String> setExtras(Map<String, String> extras) {
-        //obtain existing extras
-        Map<String, String> _extras = getExtras();
-
-        //merge with process extras
-        try {
-
-            _extras.putAll(extras);
-
-            //save extras as key:value in extra set
-            Set<String> extraSet = new HashSet<>();
-            for (String key : _extras.keySet()) {
-                String extra = key + ":" + _extras.get(key);
-                extraSet.add(extra);
-            }
-
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putStringSet(EXTRAS_PREF_KEY, extraSet);
-            editor.apply();
-
-        } catch (Exception e) {
-        }
-
+        //save and get extras
+        Map<String, String> _extras = saveMapOfPreferences(EXTRAS_PREF_KEY, extras);
         return _extras;
     }
 
@@ -613,24 +641,8 @@ public class Push {
      * @return topics
      */
     public Map<String, String> getExtras() {
-        HashMap<String, String> extras = new HashMap<String, String>();
-
-        Set<String> extraSet = preferences.getStringSet(EXTRAS_PREF_KEY, new HashSet<String>());
-
-        for (String extra : extraSet) {
-
-            //split to obtain key value
-            try {
-                String[] splits = extra.split(":");
-                if (splits != null && splits.length == 2) {
-                    extras.put(splits[0], splits[1]);
-                }
-            } catch (Exception e) {
-            }
-        }
-
+        Map<String, String> extras = getMapOfPreferences(EXTRAS_PREF_KEY);
         return extras;
-
     }
 
 
@@ -845,6 +857,70 @@ public class Push {
 
 
     /**
+     * Obtain map of shared preferences by provide key
+     *
+     * @param key
+     * @return
+     */
+    private Map<String, String> getMapOfPreferences(String key) {
+
+        HashMap<String, String> preferences = new HashMap<String, String>();
+
+        Set<String> preferenceSet = this.preferences.getStringSet(key, new HashSet<String>());
+
+        for (String preference : preferenceSet) {
+
+            //split to obtain key value
+            try {
+                String[] splits = preference.split(":");
+                if (splits != null && splits.length == 2) {
+                    preferences.put(splits[0], splits[1]);
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        return preferences;
+    }
+
+
+    /**
+     * Save map of data shared preferences using specified key
+     *
+     * @param key
+     * @param data
+     * @return
+     */
+    private Map<String, String> saveMapOfPreferences(String key, Map<String, String> data) {
+
+        //obtain existing preferences
+        Map<String, String> _data = getMapOfPreferences(key);
+
+        //merge with provided data
+        try {
+
+            _data.putAll(data);
+
+            //save data as key:value in extra set
+            Set<String> dataSet = new HashSet<>();
+            for (String _key : _data.keySet()) {
+                String value = _key + ":" + _data.get(_key);
+                dataSet.add(value);
+            }
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putStringSet(key, dataSet);
+            editor.apply();
+
+        } catch (Exception e) {
+        }
+
+        return _data;
+
+    }
+
+
+    /**
      * clear push shared preferences
      */
     public void clear() {
@@ -854,6 +930,7 @@ public class Push {
         editor.remove(INSTANCE_ID_PREF_KEY);
         editor.remove(TOPICS_PREF_KEY);
         editor.remove(EXTRAS_PREF_KEY);
+        editor.remove(INFO_PREF_KEY);
         editor.remove(API_BASE_URL_PREF_KEY);
         editor.remove(API_AUTHORIZATION_TOKEN_PREF_KEY);
         editor.apply();

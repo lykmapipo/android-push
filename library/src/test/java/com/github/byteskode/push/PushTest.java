@@ -185,6 +185,21 @@ public class PushTest {
         assertThat(extras.get("phone"), equalTo("11111111111"));
     }
 
+    @Test
+    public void shouldBeAbleToSaveDeviceInfo() {
+        Push push = Push.getInstance();
+        Map<String, String> info = push.putExtra("phone", "11111111111");
+        assertThat(info.get("phone"), equalTo("11111111111"));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceInfo() {
+        Push push = Push.getInstance();
+        push.putInfo("phone", "11111111111");
+        Map<String, String> info = push.getInfo();
+        assertThat(info.get("phone"), equalTo("11111111111"));
+    }
+
     @After
     public void cleanup() {
         Push.getInstance().clear();
