@@ -565,8 +565,12 @@ public class Push {
      * @return
      */
     public Map<String, String> setInfo(Map<String, String> info) {
+        //ensure info
+        Map<String, String> _info = getDeviceInfo();
+        _info.putAll(info);
+
         //save and return device info
-        Map<String, String> _info = saveMapOfPreferences(INFO_PREF_KEY, info);
+        _info = saveMapOfPreferences(INFO_PREF_KEY, info);
         return _info;
     }
 
@@ -597,7 +601,7 @@ public class Push {
      * @return topics
      */
     public Map<String, String> getInfo() {
-        Map<String, String> info = getMapOfPreferences(INFO_PREF_KEY);
+        Map<String, String> info = setInfo(getDeviceInfo());
         return info;
     }
 
@@ -716,12 +720,12 @@ public class Push {
 
     private Device getDevice(String registrationToken) {
         return new Device(this.getUUID(), this.getInstanceId(), registrationToken,
-                this.getTopics(), this.getExtras());
+                this.getTopics(), this.getExtras(), this.getInfo());
     }
 
     private Device getDevice() {
         return new Device(this.getUUID(), this.getInstanceId(), this.getRegistrationToken(),
-                this.getTopics(), this.getExtras());
+                this.getTopics(), this.getExtras(), this.getInfo());
     }
 
 
@@ -916,6 +920,32 @@ public class Push {
         }
 
         return _data;
+
+    }
+
+    /**
+     * Obtain device details
+     *
+     * @return
+     */
+    private Map<String, String> getDeviceInfo() {
+        Map<String, String> deviceInfo = new HashMap<String, String>();
+
+        deviceInfo.put("board", Build.BOARD);//underlying board
+        deviceInfo.put("brand", Build.BRAND); //consumer-visible brand with which the product/hardware will be associated, if any
+        deviceInfo.put("device", Build.DEVICE); //name of industrial design
+        deviceInfo.put("manufacturer", Build.MANUFACTURER); //manufacturer of the product/hardware
+        deviceInfo.put("model", Build.MODEL); //end-user-visible name for the end product
+        deviceInfo.put("product", Build.PRODUCT); //name of the overall product
+        deviceInfo.put("serial", Build.SERIAL); //hardware serial number
+        deviceInfo.put("display", Build.DISPLAY); //build ID string meant for displaying to the user
+        deviceInfo.put("sdk", String.valueOf(Build.VERSION.SDK_INT));
+        deviceInfo.put("hardware", Build.HARDWARE);
+        deviceInfo.put("type", Build.TYPE);
+        deviceInfo.put("tags", Build.TAGS);
+        deviceInfo.put("fingerprint", Build.FINGERPRINT);
+
+        return deviceInfo;
 
     }
 
