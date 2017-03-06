@@ -1,5 +1,5 @@
-byteskode-android-push(WIP)
-=========================
+byteskode-android-push
+=======================
 
 [![](https://jitpack.io/v/byteskode/byteskode-android-push.svg)](https://jitpack.io/#byteskode/byteskode-android-push)
 
