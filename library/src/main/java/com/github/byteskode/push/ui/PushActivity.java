@@ -30,6 +30,12 @@ public abstract class PushActivity extends Activity
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        register();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         register();

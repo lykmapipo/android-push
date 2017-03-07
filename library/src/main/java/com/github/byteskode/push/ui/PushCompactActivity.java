@@ -3,6 +3,7 @@ package com.github.byteskode.push.ui;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import com.github.byteskode.push.DeviceSyncListener;
 import com.github.byteskode.push.Push;
@@ -26,6 +27,12 @@ public abstract class PushCompactActivity extends AppCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
+        register();
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         register();
     }
 
