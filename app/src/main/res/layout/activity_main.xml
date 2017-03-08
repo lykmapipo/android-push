@@ -10,7 +10,12 @@
     tools:context="com.github.byteskode.push.sample.ui.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello World!" android:id="@+id/textView"/>
+    <Button
+            android:text="Sync Device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true" android:layout_marginTop="187dp" android:id="@+id/sync"/>
 </RelativeLayout>

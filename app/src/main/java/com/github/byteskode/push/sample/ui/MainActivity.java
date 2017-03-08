@@ -2,6 +2,8 @@ package com.github.byteskode.push.sample.ui;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import com.github.byteskode.push.Push;
 import com.github.byteskode.push.api.Device;
@@ -37,8 +39,17 @@ public class MainActivity extends PushCompactActivity {
         Log.d(TAG, "UUID x2:" + Push.getInstance().getUUID());
         Log.d(TAG, "Token:" + Push.getInstance().getRegistrationToken());
 
-        //Force device sync
-//        Push.getInstance().sync("phone", "255714999999");
+        //simulate force device sync
+        Button syncButton = (Button) findViewById(R.id.sync);
+        syncButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Force device sync
+                Device device = Push.getInstance().sync("phone", "255714999999");
+                Log.d(TAG, "Synced DEVICE : " + device);
+            }
+        });
+
     }
 
     @Override
