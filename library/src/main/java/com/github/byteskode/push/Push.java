@@ -842,18 +842,25 @@ public class Push {
                         Response<Device> response = update(registrationToken);
                         if (response != null && response.isSuccessful()) {
                             Device device = response.body();
-                            //notify device sync listeners
-                            if ((deviceSyncListeners != null) && !deviceSyncListeners.isEmpty()) {
-                                for (DeviceSyncListener deviceSyncListener : deviceSyncListeners) {
-                                    deviceSyncListener.onDeviceSynced(device);
-                                }
-                            }
                             return device;
                         } else {
                             return null;
                         }
                     } catch (IOException e) {
                         return null;
+                    }
+                }
+
+                @Override
+                protected void onPostExecute(Device device) {
+                    if (device == null) {
+                        device = getDevice();
+                    }
+                    //notify device sync listeners
+                    if ((deviceSyncListeners != null) && !deviceSyncListeners.isEmpty()) {
+                        for (DeviceSyncListener deviceSyncListener : deviceSyncListeners) {
+                            deviceSyncListener.onDeviceSynced(device);
+                        }
                     }
                 }
             };
@@ -863,6 +870,7 @@ public class Push {
             //return last updated device
             return getDevice();
         } catch (Exception e) {
+            //TODO implement device sync error listener
             return null;
         }
     }
