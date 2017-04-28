@@ -841,7 +841,14 @@ public class Push {
                     try {
                         Response<Device> response = update(registrationToken);
                         if (response != null && response.isSuccessful()) {
-                            return response.body();
+                            Device device = response.body();
+                            //notify device sync listeners
+                            if ((deviceSyncListeners != null) && !deviceSyncListeners.isEmpty()) {
+                                for (DeviceSyncListener deviceSyncListener : deviceSyncListeners) {
+                                    deviceSyncListener.onDeviceSynced(device);
+                                }
+                            }
+                            return device;
                         } else {
                             return null;
                         }
@@ -850,10 +857,11 @@ public class Push {
                     }
                 }
             };
+            //update device details asynchronous
+            syncTask.execute();
 
-            AsyncTask<Void, Void, Device> execute = syncTask.execute();
-            Device device = execute.get();
-            return device;
+            //return last updated device
+            return getDevice();
         } catch (Exception e) {
             return null;
         }
