@@ -959,6 +959,7 @@ public class Push {
         deviceInfo.put("type", Build.TYPE);
         deviceInfo.put("tags", Build.TAGS);
         deviceInfo.put("fingerprint", Build.FINGERPRINT);
+        deviceInfo.put("bootloader", Build.BOOTLOADER);
 
         return deviceInfo;
 
