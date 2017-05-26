@@ -333,7 +333,6 @@ public class Push {
             uuid.append(Build.MODEL).append(":"); //end-user-visible name for the end product
             uuid.append(Build.PRODUCT).append(":"); //name of the overall product
             uuid.append(Build.SERIAL).append(":"); //hardware serial number
-            uuid.append(Build.DISPLAY).append(":"); //build ID string meant for displaying to the user
             uuid.append(Build.BOOTLOADER);//system bootloader version number
 
             //hash the uuid
