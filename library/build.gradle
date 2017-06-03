@@ -26,6 +26,8 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
 
+    compile 'com.github.lykmapipo:local-burst:v0.1.0'
+
     //test dependencies
     testCompile "junit:junit:${JUNIT_VERSION}"
     testCompile "org.mockito:mockito-core:${MOCKITO_VERSION}"
