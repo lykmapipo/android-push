@@ -1,7 +1,7 @@
 android-push
 =======================
 
-[![](https://jitpack.io/v/byteskode/android-push.svg)](https://jitpack.io/#byteskode/android-push)
+[![](https://jitpack.io/v/lykmapipo/android-push.svg)](https://jitpack.io/#lykmapipo/android-push)
 
 Android FCM library
 
@@ -168,7 +168,7 @@ Do not forget to add a bit of test(s) of what value you adding.
 
 (The MIT License)
 
-Copyright (c) 2016 lykmapipo, byteskode Group && Contributors
+Copyright (c) 2016 lykmapipo && Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
