@@ -1,5 +1,6 @@
 package com.github.lykmapipo.push.api;
 
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -15,6 +16,34 @@ import java.util.Set;
  * @date 10/17/16
  */
 public class Device implements Serializable {
+    public static final String BOOTLOADER = "bootloader";
+    public static final String BOARD = "board";
+    public static final String BRAND = "brand";
+    public static final String COUNTRY_CODE = "countryCode";
+    public static final String COUNTRY_NAME = "countryName";
+    public static final String DEVICE = "device";
+    public static final String DISPLAY = "display";
+    public static final String FINGERPRINT = "fingerprint";
+    public static final String HARDWARE = "hardware";
+    public static final String LANGUAGE_CODE = "languageCode";
+    public static final String LANGUAGE_NAME = "languageName";
+    public static final String MANUFACTURER = "manufacturer";
+    public static final String MODEL = "model";
+    public static final String PACKAGE = "package";
+    public static final String PRODUCT = "product";
+    public static final String RADIO_VERSION = "radioVersion";
+    public static final String RELEASE = "release";
+    public static final String SCREEN_DENSITY = "screenDensity";
+    public static final String SCREEN_HEIGHT = "screenHeight";
+    public static final String SCREEN_WIDTH = "screenWidth";
+    public static final String SDK = "sdk";
+    public static final String SERIAL = "serial";
+    public static final String TIMEZONE = "timezone";
+    public static final String TYPE = "type";
+    public static final String TAGS = "tags";
+    public static final String USER = "user";
+    public static final String VERSION_CODE = "versionCode";
+    public static final String VERSION_NAME = "versionName";
 
     @Expose
     @SerializedName("uuid")

@@ -1,8 +1,11 @@
 package com.github.lykmapipo.push;
 
 import android.content.Context;
+
+import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.api.DeviceApi;
 import com.google.firebase.FirebaseApp;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +17,10 @@ import org.robolectric.shadows.ShadowApplication;
 import java.util.Map;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -190,7 +196,37 @@ public class PushTest {
         Push push = Push.getInstance();
         Map<String, String> info = push.getInfo();
         assertThat(info, notNullValue());
-        assertThat(info.size(), equalTo(13));
+        assertThat(info.size(), equalTo(28));
+
+        //assert info
+        assertThat(info.get(Device.BOOTLOADER), notNullValue());
+        assertThat(info.get(Device.BOARD), notNullValue());
+        assertThat(info.get(Device.BRAND), notNullValue());
+        assertThat(info.get(Device.COUNTRY_CODE), notNullValue());
+        assertThat(info.get(Device.COUNTRY_NAME), notNullValue());
+        assertThat(info.get(Device.DEVICE), notNullValue());
+        assertThat(info.get(Device.DISPLAY), notNullValue());
+        assertThat(info.get(Device.FINGERPRINT), notNullValue());
+        assertThat(info.get(Device.HARDWARE), notNullValue());
+        assertThat(info.get(Device.LANGUAGE_CODE), notNullValue());
+        assertThat(info.get(Device.LANGUAGE_NAME), notNullValue());
+        assertThat(info.get(Device.MANUFACTURER), notNullValue());
+        assertThat(info.get(Device.MODEL), notNullValue());
+        assertThat(info.get(Device.PACKAGE), notNullValue());
+        assertThat(info.get(Device.PRODUCT), notNullValue());
+        assertThat(info.get(Device.RADIO_VERSION), notNullValue());
+        assertThat(info.get(Device.RELEASE), notNullValue());
+        assertThat(info.get(Device.SCREEN_DENSITY), notNullValue());
+        assertThat(info.get(Device.SCREEN_HEIGHT), notNullValue());
+        assertThat(info.get(Device.SCREEN_WIDTH), notNullValue());
+        assertThat(info.get(Device.SDK), notNullValue());
+        assertThat(info.get(Device.SERIAL), notNullValue());
+        assertThat(info.get(Device.TIMEZONE), notNullValue());
+        assertThat(info.get(Device.TYPE), notNullValue());
+        assertThat(info.get(Device.TAGS), notNullValue());
+        assertThat(info.get(Device.USER), notNullValue());
+        assertThat(info.get(Device.VERSION_CODE), notNullValue());
+        assertThat(info.get(Device.VERSION_NAME), notNullValue());
     }
 
     @Test
