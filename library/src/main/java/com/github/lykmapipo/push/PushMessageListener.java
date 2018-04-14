@@ -1,4 +1,4 @@
-package com.github.byteskode.push;
+package com.github.lykmapipo.push;
 
 import com.google.firebase.messaging.RemoteMessage;
 

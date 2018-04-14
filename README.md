@@ -1,10 +1,10 @@
-byteskode-android-push
+android-push
 =======================
 
-[![](https://jitpack.io/v/byteskode/byteskode-android-push.svg)](https://jitpack.io/#byteskode/byteskode-android-push)
+[![](https://jitpack.io/v/byteskode/android-push.svg)](https://jitpack.io/#byteskode/android-push)
 
+Android FCM library
 
-byteskode push - Android FCM library
 
 ## Installation
 Add [https://jitpack.io](https://jitpack.io) to your build.gradle with:
@@ -15,17 +15,17 @@ allprojects {
     }
 }
 ```
-add `byteskode-android-push` dependency into your project
+add `android-push` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.byteskode:byteskode-android-push:v0.3.0'
+    compile 'com.github.lykmapipo:android-push:v0.3.0'
 }
 ```
 
 ## Usage
 
-Initialize `byteskode-android-push`
+Initialize `android-push`
 
 ```java
 public class SampleApp extends Application{
@@ -109,7 +109,7 @@ Example
 
 API Server endpoint must implemnt `device REST aware resource` and support both `POST` and `PUT` request.
 
-- [See Sample](https://github.com/lykmapipo/byteskode-android-push/blob/master/api/index.js)
+- [See Sample](https://github.com/lykmapipo/android-push/blob/master/api/index.js)
 
 Authorization header is set with the value `Bearer <apiAuthorizationToken>` on every request sent.
 

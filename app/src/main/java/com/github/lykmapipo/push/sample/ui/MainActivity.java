@@ -1,14 +1,14 @@
-package com.github.byteskode.push.sample.ui;
+package com.github.lykmapipo.push.sample.ui;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import com.github.byteskode.push.Push;
-import com.github.byteskode.push.api.Device;
-import com.github.byteskode.push.sample.R;
-import com.github.byteskode.push.ui.PushCompactActivity;
+import com.github.lykmapipo.push.Push;
+import com.github.lykmapipo.push.api.Device;
+import com.github.lykmapipo.push.sample.R;
+import com.github.lykmapipo.push.ui.PushCompactActivity;
 import com.google.firebase.messaging.RemoteMessage;
 
 

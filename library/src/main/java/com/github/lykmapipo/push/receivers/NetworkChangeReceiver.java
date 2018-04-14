@@ -1,10 +1,10 @@
-package com.github.byteskode.push.receivers;
+package com.github.lykmapipo.push.receivers;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import com.github.byteskode.push.Push;
-import com.github.byteskode.push.services.DeviceSyncService;
+import com.github.lykmapipo.push.Push;
+import com.github.lykmapipo.push.services.DeviceSyncService;
 
 /**
  * listen for device network change and sync pending device details

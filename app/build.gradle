@@ -1,18 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
 
     lintOptions {
         abortOnError false
     }
 
     defaultConfig {
-        applicationId "com.github.byteskode.push.sample"
+        applicationId "com.github.lykmapipo.push.sample"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -31,9 +29,9 @@ android {
 }
 
 dependencies {
-    compile project(':library')
-    compile "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
-    compile "com.google.firebase:firebase-messaging:${FCM_VERSION}"
+    implementation project(':library')
+    implementation "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
+    implementation "com.google.firebase:firebase-messaging:${FCM_VERSION}"
 }
 
 apply plugin: 'com.google.gms.google-services'

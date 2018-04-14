@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.github.byteskode.push">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.github.lykmapipo.push">
+
+    <!-- start required permissions-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--end required permissions-->
 
     <application
-            android:allowBackup="true"
-            android:label="@string/app_name">
-
-        <!-- start required permissions-->
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-        <!--end required permissions-->
+        android:allowBackup="true"
+        android:label="@string/app_name">
 
         <!-- start push message receiver service to listen for message events-->
-        <service
-                android:name=".services.PushMessagingService">
+        <service android:name=".services.PushMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- end push message receiver service to listen for message events-->
 
         <!-- start push registration token manager service to listen for instance id events-->
-        <service
-                android:name=".services.PushInstanceIdService">
+        <service android:name=".services.PushInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <!-- end push registration token manager service to listen for instance id events -->
@@ -36,7 +33,7 @@
         <!-- start device boot broadcast receive to sync device details if not synced -->
         <receiver android:name=".receivers.NetworkChangeReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
         <!-- end device boot broadcast receive to sync device details if not synced -->

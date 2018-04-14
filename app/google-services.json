@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "733216899870",
-    "firebase_url": "https://byteskode.firebaseio.com",
-    "project_id": "byteskode",
-    "storage_bucket": "byteskode.appspot.com"
+    "project_number": "820453897363",
+    "firebase_url": "https://lykmapipo-c2c45.firebaseio.com",
+    "project_id": "lykmapipo-c2c45",
+    "storage_bucket": "lykmapipo-c2c45.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:733216899870:android:66acdd6497d99adb",
+        "mobilesdk_app_id": "1:820453897363:android:244fa749cc27e888",
         "android_client_info": {
-          "package_name": "com.github.byteskode.push.sample"
+          "package_name": "com.github.lykmapipo.push.sample"
         }
       },
       "oauth_client": [
         {
-          "client_id": "733216899870-fojtoldjnlc4m858a5hf2ttes4jnkfgo.apps.googleusercontent.com",
+          "client_id": "820453897363-d5ioelt78skmst5o94m0kerv938ouers.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC_baAkTTya8FNBZguUg1ua5dX5k53Hl9c"
+          "current_key": "AIzaSyD7sKiQ-8e8PPpSy3ffaNeBD_lUCINZKPA"
         }
       ],
       "services": {

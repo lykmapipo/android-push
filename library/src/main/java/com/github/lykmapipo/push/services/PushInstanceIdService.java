@@ -1,7 +1,7 @@
-package com.github.byteskode.push.services;
+package com.github.lykmapipo.push.services;
 
 import android.content.Intent;
-import com.github.byteskode.push.Push;
+import com.github.lykmapipo.push.Push;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
 /**

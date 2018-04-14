@@ -1,4 +1,4 @@
-package com.github.byteskode.push.api;
+package com.github.lykmapipo.push.api;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,4 +1,4 @@
-package com.github.byteskode.push.api;
+package com.github.lykmapipo.push.api;
 
 import retrofit2.Call;
 import retrofit2.http.*;

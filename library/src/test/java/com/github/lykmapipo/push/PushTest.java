@@ -1,7 +1,7 @@
-package com.github.byteskode.push;
+package com.github.lykmapipo.push;
 
 import android.content.Context;
-import com.github.byteskode.push.api.DeviceApi;
+import com.github.lykmapipo.push.api.DeviceApi;
 import com.google.firebase.FirebaseApp;
 import org.junit.After;
 import org.junit.Before;

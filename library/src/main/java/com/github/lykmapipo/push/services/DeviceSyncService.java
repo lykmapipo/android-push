@@ -1,11 +1,11 @@
-package com.github.byteskode.push.services;
+package com.github.lykmapipo.push.services;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import com.github.byteskode.push.Push;
-import com.github.byteskode.push.api.Device;
-import com.github.byteskode.push.receivers.NetworkChangeReceiver;
+import com.github.lykmapipo.push.Push;
+import com.github.lykmapipo.push.api.Device;
+import com.github.lykmapipo.push.receivers.NetworkChangeReceiver;
 import com.google.firebase.iid.FirebaseInstanceId;
 import retrofit2.Response;
 

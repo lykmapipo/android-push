@@ -1,4 +1,4 @@
-package com.github.byteskode.push;
+package com.github.lykmapipo.push;
 
 
 import android.content.*;
@@ -9,8 +9,8 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Base64;
-import com.github.byteskode.push.api.Device;
-import com.github.byteskode.push.api.DeviceApi;
+import com.github.lykmapipo.push.api.Device;
+import com.github.lykmapipo.push.api.DeviceApi;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -186,7 +186,7 @@ public class Push {
     /**
      * obtain current push instance
      *
-     * @return {@link com.github.byteskode.push.Push}
+     * @return {@link com.github.lykmapipo.push.Push}
      */
     public static synchronized Push getInstance() {
         return instance;
@@ -196,7 +196,7 @@ public class Push {
     /**
      * initialize new push instance
      *
-     * @return {@link com.github.byteskode.push.Push}
+     * @return {@link com.github.lykmapipo.push.Push}
      */
     public static synchronized Push initialize(Context context, String apiBaseUrl, String apiAuthorizationToken) {
 

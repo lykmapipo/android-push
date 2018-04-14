@@ -1,6 +1,6 @@
-package com.github.byteskode.push;
+package com.github.lykmapipo.push;
 
-import com.github.byteskode.push.api.Device;
+import com.github.lykmapipo.push.api.Device;
 
 /**
  * @author lally elias

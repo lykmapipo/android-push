@@ -1,7 +1,7 @@
-package com.github.byteskode.push.sample;
+package com.github.lykmapipo.push.sample;
 
 import android.app.Application;
-import com.github.byteskode.push.Push;
+import com.github.lykmapipo.push.Push;
 
 /**
  * @author lally elias

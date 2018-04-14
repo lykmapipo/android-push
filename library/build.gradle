@@ -1,38 +1,36 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group = 'com.github.byteskode'
+group = 'com.github.lykmapipo'
 
 android {
-    compileSdkVersion 25
-    
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
-        versionCode 1
-        versionName "0.5.0"
+        targetSdkVersion 27
+        versionCode 60
+        versionName "0.6.0"
         consumerProguardFiles 'proguard-rules.pro'
     }
 }
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
-    compile "com.google.android.gms:play-services-base:${FCM_VERSION}"
-    compile "com.google.firebase:firebase-messaging:${FCM_VERSION}"
-    compile "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
-    compile "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
+    implementation "com.google.android.gms:play-services-base:${FCM_VERSION}"
+    implementation "com.google.firebase:firebase-messaging:${FCM_VERSION}"
+    implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
+    implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
 
-    compile 'com.github.lykmapipo:local-burst:v0.1.0'
+    implementation 'com.github.lykmapipo:local-burst:v0.3.0'
 
     //test dependencies
-    testCompile "junit:junit:${JUNIT_VERSION}"
-    testCompile "org.mockito:mockito-core:${MOCKITO_VERSION}"
-    testCompile "com.squareup.retrofit2:retrofit-mock:${RETROFIT_VERSION}"
-    testCompile "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
+    testImplementation "junit:junit:${JUNIT_VERSION}"
+    testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"
+    testImplementation "com.squareup.retrofit2:retrofit-mock:${RETROFIT_VERSION}"
+    testImplementation "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
 }
 
 // build a jar with source files

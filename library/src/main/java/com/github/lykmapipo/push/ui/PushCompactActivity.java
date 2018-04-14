@@ -1,14 +1,14 @@
-package com.github.byteskode.push.ui;
+package com.github.lykmapipo.push.ui;
 
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import com.github.byteskode.push.DeviceSyncListener;
-import com.github.byteskode.push.Push;
-import com.github.byteskode.push.PushMessageListener;
-import com.github.byteskode.push.PushTokenListener;
+import com.github.lykmapipo.push.DeviceSyncListener;
+import com.github.lykmapipo.push.Push;
+import com.github.lykmapipo.push.PushMessageListener;
+import com.github.lykmapipo.push.PushTokenListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
