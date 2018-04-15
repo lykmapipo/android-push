@@ -189,5 +189,6 @@ public class UtilsTest {
         //assert package info
         assertThat(packageInfo.get(Device.VERSION_NAME), is(notNullValue()));
         assertThat(packageInfo.get(Device.VERSION_CODE), is(notNullValue()));
+        assertThat(packageInfo.get(Device.PACKAGE), is(notNullValue()));
     }
 }

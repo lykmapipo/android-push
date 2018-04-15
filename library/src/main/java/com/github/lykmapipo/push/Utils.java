@@ -575,7 +575,7 @@ public class Utils {
     }
 
     /**
-     * Derive device information information
+     * Derive device package information
      *
      * @return
      */
@@ -588,6 +588,72 @@ public class Utils {
         /** @see PackageInfo */
         packageInfo.put(Device.VERSION_NAME, asEmpty(String.valueOf(getVersionName(context))));
 
+        /** @see Context */
+        packageInfo.put(Device.PACKAGE, asEmpty(context.getPackageName()));
+
         return packageInfo;
+    }
+
+    /**
+     * Derive device build information
+     *
+     * @return
+     */
+    public static synchronized Map<String, String> getBuildInfo() {
+        Map<String, String> buildInfo = new HashMap<String, String>();
+
+        /** @see Build.BOOTLOADER */
+        buildInfo.put(Device.BOOTLOADER, asEmpty(Build.BOOTLOADER));
+
+        /** @see Build.BOARD */
+        buildInfo.put(Device.BOARD, asEmpty(Build.BOARD));
+
+        /** @see Build.BRAND */
+        buildInfo.put(Device.BRAND, asEmpty(Build.BRAND));
+
+        /** @see Build.DEVICE */
+        buildInfo.put(Device.DEVICE, asEmpty(Build.DEVICE));
+
+        /** @see Build.DISPLAY */
+        buildInfo.put(Device.DISPLAY, asEmpty(Build.DISPLAY));
+
+        /** @see Build.FINGERPRINT */
+        buildInfo.put(Device.FINGERPRINT, asEmpty(Build.FINGERPRINT));
+
+        /** @see Build.HARDWARE */
+        buildInfo.put(Device.HARDWARE, asEmpty(Build.HARDWARE));
+
+
+        /** @see Build.MANUFACTURER */
+        buildInfo.put(Device.MANUFACTURER, asEmpty(Build.MANUFACTURER));
+
+        /** @see Build.MODEL */
+        buildInfo.put(Device.MODEL, asEmpty(Build.MODEL));
+
+        /** @see Build.PRODUCT */
+        buildInfo.put(Device.PRODUCT, asEmpty(Build.PRODUCT));
+
+        /** @see Build.VERSION.RELEASE */
+        buildInfo.put(Device.RELEASE, asEmpty(Build.VERSION.RELEASE));
+
+        /** @see Build.getRadioVersion() */
+        buildInfo.put(Device.RADIO_VERSION, asEmpty(Build.getRadioVersion()));
+
+        /** @see Build.VERSION.SDK_INT */
+        buildInfo.put(Device.SDK, asEmpty(String.valueOf(Build.VERSION.SDK_INT)));
+
+        /** @see Build.SERIAL */
+        buildInfo.put(Device.SERIAL, asEmpty(Build.SERIAL));
+
+        /** @see Build.TYPE */
+        buildInfo.put(Device.TYPE, asEmpty(Build.TYPE));
+
+        /** @see Build.TAGS */
+        buildInfo.put(Device.USER, asEmpty(Build.USER));
+
+        /** @see Build.USER */
+        buildInfo.put(Device.TAGS, asEmpty(Build.TAGS));
+
+        return buildInfo;
     }
 }

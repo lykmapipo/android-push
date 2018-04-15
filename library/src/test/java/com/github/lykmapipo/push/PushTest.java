@@ -237,6 +237,14 @@ public class PushTest {
     }
 
     @Test
+    public void shouldBeAbleToGetDeviceExtra() {
+        Push push = Push.getInstance();
+        push.putExtra("phone", "11111111111");
+        String extra = push.getExtra("phone");
+        assertThat(extra, equalTo("11111111111"));
+    }
+
+    @Test
     public void shouldBeAbleToGetExistingDeviceInfo() {
         Push push = Push.getInstance();
         Map<String, String> info = push.getInfo();
@@ -293,6 +301,14 @@ public class PushTest {
         push.putInfo("phone", "11111111111");
         Map<String, String> info = push.getInfo();
         assertThat(info.get("phone"), equalTo("11111111111"));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceInfo_Single() {
+        Push push = Push.getInstance();
+        push.putInfo("phone", "11111111111");
+        String info = push.getInfo("phone");
+        assertThat(info, equalTo("11111111111"));
     }
 
     @After

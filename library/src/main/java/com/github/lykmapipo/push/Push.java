@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -29,10 +28,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -602,13 +599,25 @@ public class Push {
     }
 
     /**
-     * obtain device(installation) extra details
+     * obtain device(installation) info details
      *
      * @return topics
      */
     public Map<String, String> getInfo() {
         Map<String, String> info = setInfo(getDeviceInfo());
         return info;
+    }
+
+    /**
+     * obtain device info
+     *
+     * @param key
+     * @return
+     */
+    public String getInfo(String key) {
+        Map<String, String> info = getInfo();
+        String _info = info.get(key);
+        return _info;
     }
 
 
@@ -648,11 +657,22 @@ public class Push {
     /**
      * obtain device(installation) extra details
      *
-     * @return topics
+     * @return extras
      */
     public Map<String, String> getExtras() {
         Map<String, String> extras = getMapOfPreferences(EXTRAS_PREF_KEY);
         return extras;
+    }
+
+    /**
+     * obtain device(installation) extra detail
+     *
+     * @param key
+     * @return
+     */
+    public String getExtra(String key) {
+        Map<String, String> extras = getExtras();
+        return extras.get(key);
     }
 
 
@@ -984,65 +1004,14 @@ public class Push {
     private Map<String, String> getDeviceInfo() {
         Map<String, String> deviceInfo = new HashMap<String, String>();
 
-        /** @see Build.BOOTLOADER */
-        deviceInfo.put(Device.BOOTLOADER, asEmpty(Build.BOOTLOADER));
-
-        /** @see Build.BOARD */
-        deviceInfo.put(Device.BOARD, asEmpty(Build.BOARD));
-
-        /** @see Build.BRAND */
-        deviceInfo.put(Device.BRAND, asEmpty(Build.BRAND));
+        //merge build info
+        deviceInfo.putAll(Utils.getBuildInfo());
 
         //merge locale info
         deviceInfo.putAll(Utils.getLocaleInfo(context));
 
-        /** @see Build.DEVICE */
-        deviceInfo.put(Device.DEVICE, asEmpty(Build.DEVICE));
-
-        /** @see Build.DISPLAY */
-        deviceInfo.put(Device.DISPLAY, asEmpty(Build.DISPLAY));
-
-        /** @see Build.FINGERPRINT */
-        deviceInfo.put(Device.FINGERPRINT, asEmpty(Build.FINGERPRINT));
-
-        /** @see Build.HARDWARE */
-        deviceInfo.put(Device.HARDWARE, asEmpty(Build.HARDWARE));
-
-
-        /** @see Build.MANUFACTURER */
-        deviceInfo.put(Device.MANUFACTURER, asEmpty(Build.MANUFACTURER));
-
-        /** @see Build.MODEL */
-        deviceInfo.put(Device.MODEL, asEmpty(Build.MODEL));
-
-        /** @see Context */
-        deviceInfo.put(Device.PACKAGE, asEmpty(context.getPackageName()));
-
-        /** @see Build.PRODUCT */
-        deviceInfo.put(Device.PRODUCT, asEmpty(Build.PRODUCT));
-
-        /** @see Build.VERSION.RELEASE */
-        deviceInfo.put(Device.RELEASE, asEmpty(Build.VERSION.RELEASE));
-
-        /** @see Build.getRadioVersion() */
-        deviceInfo.put(Device.RADIO_VERSION, asEmpty(Build.getRadioVersion()));
-
+        //merge display info
         deviceInfo.putAll(Utils.getDisplayInfo(context));
-
-        /** @see Build.VERSION.SDK_INT */
-        deviceInfo.put(Device.SDK, asEmpty(String.valueOf(Build.VERSION.SDK_INT)));
-
-        /** @see Build.SERIAL */
-        deviceInfo.put(Device.SERIAL, asEmpty(Build.SERIAL));
-
-        /** @see Build.TYPE */
-        deviceInfo.put(Device.TYPE, asEmpty(Build.TYPE));
-
-        /** @see Build.TAGS */
-        deviceInfo.put(Device.USER, asEmpty(Build.USER));
-
-        /** @see Build.USER */
-        deviceInfo.put(Device.TAGS, asEmpty(Build.TAGS));
 
         //merge package info
         deviceInfo.putAll(Utils.getPackageInfo(context));
@@ -1052,14 +1021,6 @@ public class Push {
 
         return deviceInfo;
 
-    }
-
-
-    public String asEmpty(String value) {
-        if (value == null) {
-            value = "";
-        }
-        return value;
     }
 
 
