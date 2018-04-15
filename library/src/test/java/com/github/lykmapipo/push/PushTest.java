@@ -177,6 +177,15 @@ public class PushTest {
     }
 
     @Test
+    public void shouldBeAbleToCheckIfDeviceHasWifiEnabled() {
+        Push push = Push.getInstance();
+
+        boolean wifiEnabled = push.isWifiEnabled();
+
+        assertThat(wifiEnabled, equalTo(true));
+    }
+
+    @Test
     public void shouldBeAbleToSaveDeviceExtra() {
         Push push = Push.getInstance();
         Map<String, String> extras = push.putExtra("phone", "11111111111");
@@ -196,9 +205,11 @@ public class PushTest {
         Push push = Push.getInstance();
         Map<String, String> info = push.getInfo();
         assertThat(info, notNullValue());
-        assertThat(info.size(), equalTo(28));
+        assertThat(info.size(), equalTo(34));
 
         //assert info
+        assertThat(info.get(Device.AVAILABLE_EXTERNAL_MEMORY_SIZE), notNullValue());
+        assertThat(info.get(Device.AVAILABLE_INTERNAL_MEMORY_SIZE), notNullValue());
         assertThat(info.get(Device.BOOTLOADER), notNullValue());
         assertThat(info.get(Device.BOARD), notNullValue());
         assertThat(info.get(Device.BRAND), notNullValue());
@@ -207,6 +218,7 @@ public class PushTest {
         assertThat(info.get(Device.DEVICE), notNullValue());
         assertThat(info.get(Device.DISPLAY), notNullValue());
         assertThat(info.get(Device.FINGERPRINT), notNullValue());
+        assertThat(info.get(Device.HAS_EXTERNAL_MEMORY), notNullValue());
         assertThat(info.get(Device.HARDWARE), notNullValue());
         assertThat(info.get(Device.LANGUAGE_CODE), notNullValue());
         assertThat(info.get(Device.LANGUAGE_NAME), notNullValue());
@@ -222,8 +234,11 @@ public class PushTest {
         assertThat(info.get(Device.SDK), notNullValue());
         assertThat(info.get(Device.SERIAL), notNullValue());
         assertThat(info.get(Device.TIMEZONE), notNullValue());
-        assertThat(info.get(Device.TYPE), notNullValue());
+        assertThat(info.get(Device.TOTAL_EXTERNAL_MEMORY_SIZE), notNullValue());
+        assertThat(info.get(Device.TOTAL_INTERNAL_MEMORY_SIZE), notNullValue());
         assertThat(info.get(Device.TAGS), notNullValue());
+        assertThat(info.get(Device.TOTAL_RAM), notNullValue());
+        assertThat(info.get(Device.TYPE), notNullValue());
         assertThat(info.get(Device.USER), notNullValue());
         assertThat(info.get(Device.VERSION_CODE), notNullValue());
         assertThat(info.get(Device.VERSION_NAME), notNullValue());

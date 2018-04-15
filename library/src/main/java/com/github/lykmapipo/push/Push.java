@@ -8,8 +8,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.graphics.Point;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -772,18 +770,43 @@ public class Push {
      * @return boolean
      */
     public boolean isConnected() {
+        return Utils.isConnected(context);
+    }
 
-        ConnectivityManager connectivity =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    /**
+     * Check if device Wi-Fi is enabled or disabled.
+     *
+     * @return boolean
+     */
+    public boolean isWifiEnabled() {
+        return Utils.isWifiEnabled(context);
+    }
 
-        NetworkInfo networkInfo = connectivity.getActiveNetworkInfo();
+    /**
+     * Derive current device connected network type
+     *
+     * @return String
+     */
+    public String getNetworkType() {
+        return Utils.getNetworkType(context);
+    }
 
-        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
-            return true;
-        }
+    /**
+     * Checks if device connected on wifi
+     *
+     * @return boolean
+     */
+    public boolean isConnectedOnWiFi() {
+        return isConnected() && getNetworkType().equals(Utils.NETWORK_TYPE_WIFI);
+    }
 
-        return false;
-
+    /**
+     * Checks if device connected on mobile data
+     *
+     * @return boolean
+     */
+    public boolean isConnectedOnMobile() {
+        return isConnected() && getNetworkType().equals(Utils.NETWORK_TYPE_MOBILE);
     }
 
     /**
@@ -1042,6 +1065,9 @@ public class Push {
 
         /** @see PackageInfo */
         deviceInfo.put(Device.VERSION_NAME, asEmpty(String.valueOf(getVersionName())));
+
+        //merge storage information
+        deviceInfo.putAll(Utils.getMemoryInfo(context));
 
         return deviceInfo;
 

@@ -16,6 +16,8 @@ import java.util.Set;
  * @date 10/17/16
  */
 public class Device implements Serializable {
+    public static final String AVAILABLE_EXTERNAL_MEMORY_SIZE = "availableExternalMemorySize";
+    public static final String AVAILABLE_INTERNAL_MEMORY_SIZE = "availableInternalMemorySize";
     public static final String BOOTLOADER = "bootloader";
     public static final String BOARD = "board";
     public static final String BRAND = "brand";
@@ -25,6 +27,7 @@ public class Device implements Serializable {
     public static final String DISPLAY = "display";
     public static final String FINGERPRINT = "fingerprint";
     public static final String HARDWARE = "hardware";
+    public static final String HAS_EXTERNAL_MEMORY = "hasExternalMemory";
     public static final String LANGUAGE_CODE = "languageCode";
     public static final String LANGUAGE_NAME = "languageName";
     public static final String MANUFACTURER = "manufacturer";
@@ -39,8 +42,11 @@ public class Device implements Serializable {
     public static final String SDK = "sdk";
     public static final String SERIAL = "serial";
     public static final String TIMEZONE = "timezone";
-    public static final String TYPE = "type";
+    public static final String TOTAL_EXTERNAL_MEMORY_SIZE = "totalExternalMemorySize";
+    public static final String TOTAL_INTERNAL_MEMORY_SIZE = "totalInternalMemorySize";
     public static final String TAGS = "tags";
+    public static final String TOTAL_RAM = "totalRAM";
+    public static final String TYPE = "type";
     public static final String USER = "user";
     public static final String VERSION_CODE = "versionCode";
     public static final String VERSION_NAME = "versionName";
