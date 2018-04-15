@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -190,5 +191,14 @@ public class UtilsTest {
         assertThat(packageInfo.get(Device.VERSION_NAME), is(notNullValue()));
         assertThat(packageInfo.get(Device.VERSION_CODE), is(notNullValue()));
         assertThat(packageInfo.get(Device.PACKAGE), is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceUUID() {
+        String uuid = Utils.getUUID(context);
+        String _uuid = Utils.getUUID(context);
+
+        assertThat(uuid, is(notNullValue()));
+        assertThat(uuid, is(equalTo(_uuid)));
     }
 }

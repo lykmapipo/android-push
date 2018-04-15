@@ -30,8 +30,6 @@ android {
 
 dependencies {
     implementation project(':library')
-    implementation "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
-    implementation "com.google.firebase:firebase-messaging:${FCM_VERSION}"
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -4,10 +4,8 @@ package com.github.lykmapipo.push;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Base64;
 
 import com.github.lykmapipo.localburst.LocalBurst;
 import com.github.lykmapipo.push.api.Device;
@@ -22,8 +20,6 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -186,6 +182,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @return {@link com.github.lykmapipo.push.Push}
      */
     public static synchronized Push getInstance() {
+        //TODO initialize here...
         return instance;
     }
 
@@ -263,28 +260,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
         if ((uuid != null) && !uuid.isEmpty()) {
             return uuid;
         } else {
-
-            //prepare device uuid
-            StringBuilder uuid = new StringBuilder();
-            uuid.append(context.getPackageName()).append(":"); //name of this application's package
-            uuid.append(Build.BOARD).append(":"); //underlying board
-            uuid.append(Build.BRAND).append(":"); //consumer-visible brand with which the product/hardware will be associated, if any
-            uuid.append(Build.DEVICE).append(":"); //name of industrial design
-            uuid.append(Build.MANUFACTURER).append(":"); //manufacturer of the product/hardware
-            uuid.append(Build.MODEL).append(":"); //end-user-visible name for the end product
-            uuid.append(Build.PRODUCT).append(":"); //name of the overall product
-            uuid.append(Build.SERIAL).append(":"); //hardware serial number
-            uuid.append(Build.BOOTLOADER);//system bootloader version number
-
-            //hash the uuid
-            try {
-                MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-                messageDigest.update(uuid.toString().getBytes());
-                this.uuid = Base64.encodeToString(messageDigest.digest(), Base64.DEFAULT);
-            } catch (NoSuchAlgorithmException e) {
-                this.uuid = Base64.encodeToString(uuid.toString().getBytes(), Base64.DEFAULT);
-            }
-
+            this.uuid = Utils.getUUID(context);
             return this.uuid;
         }
     }

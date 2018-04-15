@@ -22,12 +22,14 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
+    api "com.android.support:support-v4:${APPCOMPAT_VERSION}"
+    api "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
     implementation "com.google.android.gms:play-services-base:${FCM_VERSION}"
-    implementation "com.google.firebase:firebase-messaging:${FCM_VERSION}"
+    api "com.google.firebase:firebase-messaging:${FCM_VERSION}"
     implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
-    implementation 'com.github.lykmapipo:local-burst:v0.3.0'
+    api "com.github.lykmapipo:local-burst:${LOCALBURST_VERSION}"
+
     //test dependencies
     testImplementation "junit:junit:${JUNIT_VERSION}"
     testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"

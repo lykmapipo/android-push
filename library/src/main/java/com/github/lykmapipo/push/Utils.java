@@ -12,6 +12,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -21,6 +22,8 @@ import com.github.lykmapipo.push.api.Device;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -655,5 +658,40 @@ public class Utils {
         buildInfo.put(Device.TAGS, asEmpty(Build.TAGS));
 
         return buildInfo;
+    }
+
+
+    /**
+     * Generate device pseudo uuid
+     *
+     * @param context
+     * @return
+     */
+    public static synchronized String getUUID(Context context) {
+        //initialize uuid
+        String uuid;
+
+        //prepare device uuid
+        StringBuilder _uuid = new StringBuilder();
+        _uuid.append(context.getApplicationContext().getPackageName()).append(":"); //name of this application's package
+        _uuid.append(Build.BOARD).append(":"); //underlying board
+        _uuid.append(Build.BRAND).append(":"); //consumer-visible brand with which the product/hardware will be associated, if any
+        _uuid.append(Build.DEVICE).append(":"); //name of industrial design
+        _uuid.append(Build.MANUFACTURER).append(":"); //manufacturer of the product/hardware
+        _uuid.append(Build.MODEL).append(":"); //end-user-visible name for the end product
+        _uuid.append(Build.PRODUCT).append(":"); //name of the overall product
+        _uuid.append(Build.SERIAL).append(":"); //hardware serial number
+        _uuid.append(Build.BOOTLOADER);//system bootloader version number
+
+        //hash the uuid
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+            messageDigest.update(_uuid.toString().getBytes());
+            uuid = Base64.encodeToString(messageDigest.digest(), Base64.DEFAULT);
+        } catch (NoSuchAlgorithmException e) {
+            uuid = Base64.encodeToString(_uuid.toString().getBytes(), Base64.DEFAULT);
+        }
+
+        return uuid;
     }
 }

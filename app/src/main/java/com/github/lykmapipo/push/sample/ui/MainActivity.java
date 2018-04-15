@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.github.lykmapipo.push.Push;
 import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.sample.R;
@@ -69,7 +70,7 @@ public class MainActivity extends PushCompactActivity {
         Log.d(TAG, "Message Type: " + remoteMessage.getMessageType());
         Log.d(TAG, "Message Data: " + remoteMessage.getData());
         Log.d(TAG, "Message Notification: " + remoteMessage.getNotification());
-        Toast.makeText(MainActivity.this, "Push Received", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Push Message Received", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -77,6 +78,7 @@ public class MainActivity extends PushCompactActivity {
         Log.d(TAG, "DEVICE UUID: " + device.getUuid());
         Log.d(TAG, "DEVICE Registration Token: " + device.getRegistrationToken());
         Log.d(TAG, "DEVICE Registration InstanceID: " + device.getInstanceId());
+        Toast.makeText(MainActivity.this, "Registration Token Refreshed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -90,6 +92,7 @@ public class MainActivity extends PushCompactActivity {
         Log.d(TAG, "Synced DEVICE Registration Token: " + device.getRegistrationToken());
         Log.d(TAG, "Synced DEVICE Registration InstanceID: " + device.getInstanceId());
         Log.d(TAG, "Synced DEVICE Extras: " + device.getExtras());
+        Toast.makeText(MainActivity.this, "Device Synced", Toast.LENGTH_SHORT).show();
 
     }
 }
