@@ -3,7 +3,6 @@ package com.github.lykmapipo.push;
 import android.content.Context;
 
 import com.github.lykmapipo.push.api.Device;
-import com.github.lykmapipo.push.api.DeviceApi;
 import com.google.firebase.FirebaseApp;
 
 import org.junit.After;
@@ -50,9 +49,6 @@ public class PushTest {
         Push push = Push.getInstance();
 
         assertThat(push, is(not(equalTo(null))));
-        assertThat(push.getApiBaseUrl(), is(not(equalTo(null))));
-        assertThat(push.getApiAuthorizationToken(), is(not(equalTo(null))));
-        assertThat(push.getDeviceApi(), is(not(equalTo(null))));
     }
 
     @Test
@@ -65,60 +61,6 @@ public class PushTest {
         assertThat(uuid1, is(not(equalTo(null))));
         assertThat(uuid2, is(not(equalTo(null))));
         assertThat(uuid1, is(equalTo(uuid2)));
-    }
-
-    @Test
-    public void shouldBeAbleToInitializeDeviceApi() {
-
-        Push push = Push.getInstance();
-
-        DeviceApi deviceApi = push.getDeviceApi();
-        assertThat(deviceApi, is(not(equalTo(null))));
-    }
-
-
-    @Test
-    public void shouldBeAbleToSetApiBaseUrl() {
-
-        Push push = Push.getInstance();
-        String apiBaseUrl = push.setApiBaseUrl(this.apiBaseUrl);
-
-        assertThat(apiBaseUrl, equalTo(this.apiBaseUrl));
-    }
-
-    @Test
-    public void shouldBeAbleToGetApiBaseUrl() {
-
-        Push push = Push.getInstance();
-        push.setApiBaseUrl(this.apiBaseUrl);
-
-        String apiBaseUrl = push.getApiBaseUrl();
-
-        assertThat(apiBaseUrl, equalTo(this.apiBaseUrl));
-    }
-
-    @Test
-    public void shouldBeAbleToSetApiAuthorizationToken() {
-
-        Push push = Push.getInstance();
-        String authorizationToken = push.setApiAuthorizationToken(this.apiAuthorizationToken);
-
-        assertThat(authorizationToken, equalTo(this.apiAuthorizationToken));
-    }
-
-    @Test
-    public void shouldBeAbleToGetApiAuthorizationToken() {
-
-        Push push = Push.getInstance();
-        push.setApiAuthorizationToken(this.apiAuthorizationToken);
-
-        String apiAuthorizationToken = push.getApiAuthorizationToken();
-
-        assertThat(apiAuthorizationToken, equalTo(this.apiAuthorizationToken));
-    }
-
-    @Test
-    public void shouldBeAbleToGetInstanceId() {
     }
 
 

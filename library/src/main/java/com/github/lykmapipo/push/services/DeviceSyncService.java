@@ -29,7 +29,16 @@ public class DeviceSyncService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        //obtain action
+        String action = intent.getAction();
+        action = action != null ? action : Push.REGISTRATION_TOKEN_REFRESHED;
+
+        //force sync
+        boolean forceSync = intent.getBooleanExtra(Push.FORCE_DEVICE_SYNC, false);
+
         try {
+
             //obtain push instance
             Push push = Push.getInstance();
 
@@ -42,7 +51,7 @@ public class DeviceSyncService extends IntentService {
             //check if token are different for updates
             boolean shouldUpdateServerToken = !currentRegistrationToken.equals(latestRegistrationToken);
 
-            if (shouldUpdateServerToken) {
+            if (shouldUpdateServerToken || forceSync) {
                 //save or update current device registration token
                 push.setRegistrationToken(latestRegistrationToken);
 
@@ -64,7 +73,7 @@ public class DeviceSyncService extends IntentService {
                     //notify registration token updated or created successfully
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(Push.SUCCESS, true);
-                    LocalBurst.$emit(Push.REGISTRATION_TOKEN_REFRESHED, bundle);
+                    LocalBurst.$emit(action, bundle);
 
                 }
             }
@@ -78,7 +87,7 @@ public class DeviceSyncService extends IntentService {
             Bundle bundle = new Bundle();
             bundle.putBoolean(Push.SUCCESS, false);
             bundle.putString(Push.MESSAGE, e.getMessage());
-            LocalBurst.$emit(Push.REGISTRATION_TOKEN_REFRESHED, bundle);
+            LocalBurst.$emit(action, bundle);
 
             //reschedule push device details sync in case of any exception
             NetworkChangeReceiver.completeWakefulIntent(intent);

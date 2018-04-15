@@ -46,8 +46,7 @@ public class MainActivity extends PushCompactActivity {
             @Override
             public void onClick(View v) {
                 //Force device sync
-                Device device = Push.getInstance().sync("phone", "255714999999");
-                Log.d(TAG, "Synced DEVICE : " + device);
+                Push.getInstance().sync("phone", "255714999999");
             }
         });
 

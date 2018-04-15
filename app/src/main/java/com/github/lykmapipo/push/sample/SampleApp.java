@@ -1,6 +1,7 @@
 package com.github.lykmapipo.push.sample;
 
 import android.app.Application;
+
 import com.github.lykmapipo.push.Push;
 
 /**

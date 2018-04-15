@@ -35,7 +35,7 @@ public abstract class PushCompactActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        register();
+        Push.$register(this);
     }
 
     private void register() {
@@ -46,12 +46,15 @@ public abstract class PushCompactActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Push.$register(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        Push push = Push.getInstance();
-        push.unregister(this);
-
+        Push.$unregister(this);
     }
 
     /**

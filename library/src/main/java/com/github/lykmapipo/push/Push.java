@@ -2,14 +2,16 @@ package com.github.lykmapipo.push;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 
 import com.github.lykmapipo.localburst.LocalBurst;
 import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.api.DeviceApi;
+import com.github.lykmapipo.push.services.DeviceSyncService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -41,6 +43,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
 
     public static final String SUCCESS = "success";
     public static final String MESSAGE = "message";
+    public static final String FORCE_DEVICE_SYNC = "forceDeviceSync";
 
     /**
      * key used to signal device fcm registration token refresh
@@ -61,42 +64,24 @@ public class Push implements LocalBurst.OnBroadcastListener {
     /**
      * key used to stoke latest fcm registration token
      */
-    public static final String REGISTRATION_TOKEN_PREF_KEY = "registrationToken";
-
-
-    /**
-     * key used to store application instance id
-     */
-    public static final String INSTANCE_ID_PREF_KEY = "instanceId";
+    private static final String REGISTRATION_TOKEN_PREF_KEY = "registrationToken";
 
 
     /**
      * key used to store application subscribed push topics
      */
-    public static final String TOPICS_PREF_KEY = "topics";
+    private static final String TOPICS_PREF_KEY = "topics";
 
 
     /**
      * key used to store application specific details about the device(installation)
      */
-    public static final String EXTRAS_PREF_KEY = "extras";
+    private static final String EXTRAS_PREF_KEY = "extras";
 
     /**
      * key used to store application device information
      */
-    public static final String INFO_PREF_KEY = "info";
-
-
-    /**
-     * key used to store api server end point to post and update device push details
-     */
-    public static final String API_BASE_URL_PREF_KEY = "apiBaseUrl";
-
-
-    /**
-     * key used to store api server authorization token
-     */
-    public static final String API_AUTHORIZATION_TOKEN_PREF_KEY = "apiAuthorizationToken";
+    private static final String INFO_PREF_KEY = "info";
 
 
     /**
@@ -104,35 +89,30 @@ public class Push implements LocalBurst.OnBroadcastListener {
      */
     private static Push instance = null;
 
-
-    /**
-     * shared preference instance
-     */
-    private SharedPreferences preferences;
-
-
-    /**
-     * set of application subscribed push topics
-     */
-    private Set<String> topics = new HashSet<String>();
-
-
-    /**
-     * latest push registration token
-     */
-    private String registrationToken = "";
-
     /**
      * server api endpoint to post and update device push details
      */
     private String apiBaseUrl = "";
-
 
     /**
      * server api authorization token
      */
     private String apiAuthorizationToken = "";
 
+    /**
+     * shared preference instance
+     */
+    private SharedPreferences preferences;
+
+    /**
+     * set of application subscribed push topics
+     */
+    private Set<String> topics = new HashSet<String>();
+
+    /**
+     * latest push registration token
+     */
+    private String registrationToken = "";
 
     /**
      * device api used to sync device push details to remove server
@@ -171,8 +151,10 @@ public class Push implements LocalBurst.OnBroadcastListener {
      *
      * @param context
      */
-    private Push(Context context) {
+    private Push(Context context, String apiBaseUrl, String apiAuthorizationToken) {
         this.context = context;
+        this.apiBaseUrl = apiBaseUrl;
+        this.apiAuthorizationToken = apiAuthorizationToken;
     }
 
 
@@ -192,12 +174,13 @@ public class Push implements LocalBurst.OnBroadcastListener {
      *
      * @return {@link com.github.lykmapipo.push.Push}
      */
-    public static synchronized Push initialize(Context context, String apiBaseUrl, String apiAuthorizationToken) {
+    public static synchronized void initialize(
+            @NonNull Context context, @NonNull String apiBaseUrl, @NonNull String apiAuthorizationToken) {
 
         if (instance == null) {
 
             //instantiate new push
-            instance = new Push(context.getApplicationContext());
+            instance = new Push(context.getApplicationContext(), apiBaseUrl, apiAuthorizationToken);
 
             //initialize local burst
             LocalBurst localBurst =
@@ -205,29 +188,42 @@ public class Push implements LocalBurst.OnBroadcastListener {
             localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
 
             //initialize
-            instance.init(apiBaseUrl, apiAuthorizationToken);
+            instance.init();
         }
-
-        return instance;
     }
 
+    /**
+     * Unregister push listener
+     *
+     * @param listener
+     */
+    public static synchronized void $unregister(Object listener) {
+        Push instance = Push.getInstance();
+        if (instance != null) {
+            instance.unregister(listener);
+        }
+    }
+
+    /**
+     * Register push listeners
+     *
+     * @param listener
+     */
+    public static synchronized void $register(Object listener) {
+        Push instance = Push.getInstance();
+        if (instance != null && instance.isGooglePlayServiceAvailable()) {
+            instance.register(listener);
+        }
+    }
 
     /**
      * initialize push internal
      */
-    private void init(String apiBaseUrl, String apiAuthorizationToken) {
+    private void init() {
 
         //obtain preference manager
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-
-        //set api base url
-        instance.setApiBaseUrl(apiBaseUrl);
-
-        //set authorization token
-        instance.setApiAuthorizationToken(apiAuthorizationToken);
-
-        //load existing topics
-        this.topics = preferences.getStringSet(TOPICS_PREF_KEY, this.topics);
+        this.preferences =
+                PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 
         //initialize device server api endpoints
         if ((this.deviceApi == null) && (this.apiBaseUrl != null) && !this.apiBaseUrl.isEmpty()) {
@@ -250,7 +246,6 @@ public class Push implements LocalBurst.OnBroadcastListener {
 
     }
 
-
     /**
      * Returns a generated unique pseudo ID from android.os.Build Constants
      *
@@ -263,15 +258,6 @@ public class Push implements LocalBurst.OnBroadcastListener {
             this.uuid = Utils.getUUID(context);
             return this.uuid;
         }
-    }
-
-    /**
-     * obtain device endpoint api client
-     *
-     * @return
-     */
-    public DeviceApi getDeviceApi() {
-        return deviceApi;
     }
 
     /**
@@ -341,78 +327,18 @@ public class Push implements LocalBurst.OnBroadcastListener {
             //register push token listener
             if (listener instanceof PushTokenListener) {
                 if (this.pushTokenListeners == null) {
-                    this.pushTokenListeners.add((PushTokenListener) listener);
+                    this.pushTokenListeners.remove((PushTokenListener) listener);
                 }
             }
 
             //register device sync listener
             if (listener instanceof DeviceSyncListener) {
                 if (this.deviceSyncListeners == null) {
-                    this.deviceSyncListeners.add((DeviceSyncListener) listener);
+                    this.deviceSyncListeners.remove((DeviceSyncListener) listener);
                 }
             }
 
         }
-    }
-
-
-    /**
-     * save server api endpoint to post and update device push details
-     *
-     * @param apiBaseUrl
-     * @return
-     */
-    public String setApiBaseUrl(String apiBaseUrl) {
-        //save api url to shared preference
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(API_BASE_URL_PREF_KEY, apiBaseUrl);
-        editor.apply();
-
-        //update in memory apiBaseUrl
-        this.apiBaseUrl = apiBaseUrl;
-
-        return this.apiBaseUrl;
-    }
-
-    /**
-     * get server api endpoint to post and update device push details
-     *
-     * @return
-     */
-    public String getApiBaseUrl() {
-        String apiUrl = preferences.getString(API_BASE_URL_PREF_KEY, this.apiBaseUrl);
-        return apiUrl;
-    }
-
-
-    /**
-     * save server api endpoint authorization token to post and update device push details
-     *
-     * @param authorizationToken
-     * @return
-     */
-    public String setApiAuthorizationToken(String authorizationToken) {
-        //save api authorization token to shared preference
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(API_AUTHORIZATION_TOKEN_PREF_KEY, authorizationToken);
-        editor.apply();
-
-        //update in memory api authorization token
-        this.apiAuthorizationToken = authorizationToken;
-
-        return this.apiAuthorizationToken;
-    }
-
-
-    /**
-     * get server api endpoint authorization token to post and update device push details
-     *
-     * @return
-     */
-    public String getApiAuthorizationToken() {
-        String apiAuthorizationToken =
-                preferences.getString(API_AUTHORIZATION_TOKEN_PREF_KEY, this.apiAuthorizationToken);
-        return apiAuthorizationToken;
     }
 
 
@@ -638,20 +564,6 @@ public class Push implements LocalBurst.OnBroadcastListener {
 
 
     /**
-     * Send push message
-     *
-     * @param message
-     * @see com.google.firebase.messaging.RemoteMessage
-     * @see com.google.firebase.messaging.FirebaseMessaging
-     */
-    public void send(RemoteMessage message) {
-        //TODO implement sent and error callback
-        //TODO send message to api server
-        FirebaseMessaging.getInstance().send(message);
-    }
-
-
-    /**
      * create new device push registration details in remote api server(app server)
      *
      * @param registrationToken
@@ -664,7 +576,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
             Device device = getDevice(registrationToken);
 
             //prepare authorization header value
-            String authorization = "Bearer " + this.getApiAuthorizationToken();
+            String authorization = "Bearer " + this.apiAuthorizationToken;
 
             //call POST /devices
             Call<Device> call = this.deviceApi.create(authorization, device);
@@ -699,7 +611,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
             Device device = getDevice(registrationToken);
 
             //prepare authorization header value
-            String authorization = "Bearer " + this.getApiAuthorizationToken();
+            String authorization = "Bearer " + this.apiAuthorizationToken;
 
             //call PUT /devices
             Call<Device> call = this.deviceApi.update(authorization, device);
@@ -782,10 +694,9 @@ public class Push implements LocalBurst.OnBroadcastListener {
      *
      * @return
      */
-    public Device sync() {
+    public void sync() {
         Map<String, String> extras = new HashMap<String, String>();
-        Device sync = sync(extras);
-        return sync;
+        sync(extras);
     }
 
     /**
@@ -795,7 +706,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @param extraValue
      * @return
      */
-    public Device sync(String extraKey, String extraValue) {
+    public void sync(String extraKey, String extraValue) {
 
         Map<String, String> extras = new HashMap<String, String>();
 
@@ -803,9 +714,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
             extras.put(extraKey, extraValue);
         }
 
-        Device device = sync(extras);
-
-        return device;
+        sync(extras);
     }
 
     /**
@@ -814,53 +723,17 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @param extras
      * @return
      */
-    public Device sync(Map<String, String> extras) {
-        try {
-            //update device extras
-            Map<String, String> _extras = setExtras(extras);
+    private void sync(Map<String, String> extras) {
 
-            //TODO ensure internet connections before sync
+        //update device extras
+        Map<String, String> _extras = setExtras(extras);
 
-            //prepare device sync task
-            AsyncTask<Void, Void, Device> syncTask = new AsyncTask<Void, Void, Device>() {
-                @Override
-                protected Device doInBackground(Void... params) {
-                    final String registrationToken = getRegistrationToken();
-                    try {
-                        Response<Device> response = update(registrationToken);
-                        if (response != null && response.isSuccessful()) {
-                            Device device = response.body();
-                            return device;
-                        } else {
-                            return null;
-                        }
-                    } catch (IOException e) {
-                        return null;
-                    }
-                }
+        //start sync service
+        Intent intent = new Intent(context.getApplicationContext(), DeviceSyncService.class);
+        intent.putExtra(FORCE_DEVICE_SYNC, true);
+        intent.setAction(DEVICE_SYNCED);
+        context.startService(intent);
 
-                @Override
-                protected void onPostExecute(Device device) {
-                    if (device == null) {
-                        device = getDevice();
-                    }
-                    //notify device sync listeners
-                    if ((deviceSyncListeners != null) && !deviceSyncListeners.isEmpty()) {
-                        for (DeviceSyncListener deviceSyncListener : deviceSyncListeners) {
-                            deviceSyncListener.onDeviceSynced(device);
-                        }
-                    }
-                }
-            };
-            //update device details asynchronous
-            syncTask.execute();
-
-            //return last updated device
-            return getDevice();
-        } catch (Exception e) {
-            //TODO implement device sync error listener
-            return null;
-        }
     }
 
 
@@ -962,12 +835,9 @@ public class Push implements LocalBurst.OnBroadcastListener {
         //clear all push preferences
         SharedPreferences.Editor editor = preferences.edit();
         editor.remove(REGISTRATION_TOKEN_PREF_KEY);
-        editor.remove(INSTANCE_ID_PREF_KEY);
         editor.remove(TOPICS_PREF_KEY);
         editor.remove(EXTRAS_PREF_KEY);
         editor.remove(INFO_PREF_KEY);
-        editor.remove(API_BASE_URL_PREF_KEY);
-        editor.remove(API_AUTHORIZATION_TOKEN_PREF_KEY);
         editor.apply();
     }
 
@@ -1011,7 +881,21 @@ public class Push implements LocalBurst.OnBroadcastListener {
 
         //handle device synced
         if (action.equals(DEVICE_SYNCED)) {
+            //check for success synced device
+            boolean isSuccess = extras.getBoolean(Push.SUCCESS, false);
 
+            //notify device sync listener
+            if (deviceSyncListeners != null && !deviceSyncListeners.isEmpty()) {
+                for (DeviceSyncListener deviceSyncListener : deviceSyncListeners) {
+                    //notify success device sync listener
+                    if (isSuccess) {
+                        deviceSyncListener.onDeviceSynced(getDevice());
+                    }
+
+                    //TODO notify device sync error listener
+
+                }
+            }
         }
     }
 }
