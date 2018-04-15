@@ -173,7 +173,7 @@ public class PushTest {
 
         boolean connected = push.isConnected();
 
-        assertThat(connected, equalTo(true));
+        assertThat(connected, is(notNullValue()));
     }
 
     @Test
@@ -182,7 +182,43 @@ public class PushTest {
 
         boolean wifiEnabled = push.isWifiEnabled();
 
-        assertThat(wifiEnabled, equalTo(true));
+        assertThat(wifiEnabled, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToCheckDeviceNetworkType() {
+        Push push = Push.getInstance();
+
+        String networkType = push.getNetworkType();
+
+        assertThat(networkType, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToCheckIfDeviceIsConnectedOnWifi() {
+        Push push = Push.getInstance();
+
+        boolean connectedOnWiFi = push.isConnectedOnWiFi();
+
+        assertThat(connectedOnWiFi, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToCheckIfDeviceIsConnectedOnMobile() {
+        Push push = Push.getInstance();
+
+        boolean connectedOnMobile = push.isConnectedOnMobile();
+
+        assertThat(connectedOnMobile, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToCheckIfDeviceHasGooglePlayServiceAvailable() {
+        Push push = Push.getInstance();
+
+        boolean googlePlayServiceAvailable = push.isGooglePlayServiceAvailable();
+
+        assertThat(googlePlayServiceAvailable, is(notNullValue()));
     }
 
     @Test

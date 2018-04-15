@@ -497,7 +497,7 @@ public class Push {
      *
      * @return instanceId
      */
-    public String getInstanceId() {
+    private String getInstanceId() {
         String instanceId = FirebaseInstanceId.getInstance().getId();
         return instanceId;
     }
@@ -507,7 +507,7 @@ public class Push {
      * Subscribe to a given push topic
      *
      * @param topic
-     * @see {@link com.google.firebase.messaging.FirebaseMessaging}
+     * @see com.google.firebase.messaging.FirebaseMessaging
      */
     public Set<String> subscribe(String topic) {
         try {
@@ -536,7 +536,7 @@ public class Push {
      * Unsubscribe from a given push topic
      *
      * @param topic
-     * @see {@link com.google.firebase.messaging.FirebaseMessaging}
+     * @see com.google.firebase.messaging.FirebaseMessaging
      */
     public Set<String> unsubscribe(String topic) {
         try {
@@ -574,7 +574,7 @@ public class Push {
      * @param info
      * @return
      */
-    public Map<String, String> setInfo(Map<String, String> info) {
+    private Map<String, String> setInfo(Map<String, String> info) {
         //ensure info
         Map<String, String> _info = getDeviceInfo();
         _info.putAll(info);
@@ -622,7 +622,7 @@ public class Push {
      * @param extras
      * @return
      */
-    public Map<String, String> setExtras(Map<String, String> extras) {
+    private Map<String, String> setExtras(Map<String, String> extras) {
         //save and get extras
         Map<String, String> _extras = saveMapOfPreferences(EXTRAS_PREF_KEY, extras);
         return _extras;
@@ -694,8 +694,8 @@ public class Push {
      * Send push message
      *
      * @param message
-     * @see {@link com.google.firebase.messaging.RemoteMessage}
-     * @see {@link com.google.firebase.messaging.FirebaseMessaging}
+     * @see com.google.firebase.messaging.RemoteMessage
+     * @see com.google.firebase.messaging.FirebaseMessaging
      */
     public void send(RemoteMessage message) {
         //TODO implement sent and error callback
@@ -813,15 +813,21 @@ public class Push {
      * Check the device to make sure it has the Google Play Services APK
      */
     public boolean isGooglePlayServiceAvailable() {
+        boolean isGooglePlayServiceAvailable = false;
+        try {
+            GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+            int status = api.isGooglePlayServicesAvailable(this.context);
 
-        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int status = api.isGooglePlayServicesAvailable(this.context);
-
-        if (status == ConnectionResult.SUCCESS) {
-            return true;
-        } else {
-            return false;
+            if (status == ConnectionResult.SUCCESS) {
+                isGooglePlayServiceAvailable = true;
+            } else {
+                isGooglePlayServiceAvailable = false;
+            }
+        } catch (Exception e) {
+            isGooglePlayServiceAvailable = false;
         }
+
+        return isGooglePlayServiceAvailable;
     }
 
     /**
