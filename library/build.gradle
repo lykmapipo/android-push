@@ -5,7 +5,7 @@ group = 'com.github.lykmapipo'
 
 android {
     compileSdkVersion 27
-
+    buildToolsVersion '27.0.3'
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
@@ -13,19 +13,21 @@ android {
         versionName "0.6.0"
         consumerProguardFiles 'proguard-rules.pro'
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
 }
 
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
     implementation "com.google.android.gms:play-services-base:${FCM_VERSION}"
     implementation "com.google.firebase:firebase-messaging:${FCM_VERSION}"
     implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
-
     implementation 'com.github.lykmapipo:local-burst:v0.3.0'
-
     //test dependencies
     testImplementation "junit:junit:${JUNIT_VERSION}"
     testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"

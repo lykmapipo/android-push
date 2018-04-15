@@ -15,6 +15,6 @@ public class SampleApp extends Application {
 
         //TODO replace with your baseUrl and registration token
         //TODO deploy sample api to heroku
-        Push.initialize(this, "http://192.168.1.125:3000", "SHOZZEKSJT");
+        Push.initialize(this, "http://192.168.43.151:3000", "SHOZZEKSJT");
     }
 }

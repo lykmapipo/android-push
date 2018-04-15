@@ -979,7 +979,7 @@ public class Push {
             _data.putAll(data);
 
             //save data as key:value in extra set
-            Set<String> dataSet = new HashSet<>();
+            Set<String> dataSet = new HashSet<String>();
             for (String _key : _data.keySet()) {
                 String value = _key + ":" + _data.get(_key);
                 dataSet.add(value);

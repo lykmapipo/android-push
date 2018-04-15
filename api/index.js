@@ -20,12 +20,13 @@ app.use(bodyParser.json());
  */
 app.post('/devices', (request, response) => {
     //log headers
-    console.log(request.headers);
+    console.log('POST Header: ', request.headers);
 
     //log device details
-    console.log(request.body);
+    console.log('POST Body: ', request.body);
 
     //echo back
+    response.status(201);
     response.json(request.body);
 });
 
@@ -35,12 +36,13 @@ app.post('/devices', (request, response) => {
  */
 app.put('/devices', (request, response) => {
     //log headers
-    console.log(request.headers);
+    console.log('PUT Headers: ', request.headers);
 
     //log device details
-    console.log(request.body);
+    console.log('PUT Body: ', request.body);
 
     //echo back
+    response.status(200)
     response.json(request.body);
 });
 
