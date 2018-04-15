@@ -1,17 +1,15 @@
 package com.github.lykmapipo.push;
 
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Base64;
 
+import com.github.lykmapipo.localburst.LocalBurst;
 import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.api.DeviceApi;
 import com.google.android.gms.common.ConnectionResult;
@@ -40,10 +38,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * simplified push notification for android application
  *
- * @author lally elias(lykmapipo), byteskode Team & Contibutors
- * @email lallyelias87@gmail.com, lally.elias@byteskode.com
+ * @author lally elias(lykmapipo) & Contibutors
+ * @email lallyelias87@gmail.com
  */
-public class Push {
+public class Push implements LocalBurst.OnBroadcastListener {
+
+    public static final String SUCCESS = "success";
+    public static final String MESSAGE = "message";
+
     /**
      * key used to signal device fcm registration token refresh
      */
@@ -53,6 +55,11 @@ public class Push {
      * key used to signal new received push message
      */
     public static final String PUSH_MESSAGE_RECEIVED = "pushMessageReceived";
+
+    /**
+     * key used to signal device synced
+     */
+    public static final String DEVICE_SYNCED = "deviceSynced";
 
 
     /**
@@ -113,10 +120,6 @@ public class Push {
      */
     private Set<String> topics = new HashSet<String>();
 
-    /**
-     * map of application extra details about the device(installation)
-     */
-    private Map<String, String> extras = new HashMap<String, String>();
 
     /**
      * latest push registration token
@@ -166,16 +169,6 @@ public class Push {
      */
     private Set<DeviceSyncListener> deviceSyncListeners;
 
-    /**
-     * listen to registration token broadcast
-     */
-    private BroadcastReceiver registrationTokenReceiver;
-
-    /**
-     * listen to push message
-     */
-    private BroadcastReceiver messageReceiver;
-
 
     /**
      * Private constructor
@@ -207,7 +200,12 @@ public class Push {
         if (instance == null) {
 
             //instantiate new push
-            instance = new Push(context);
+            instance = new Push(context.getApplicationContext());
+
+            //initialize local burst
+            LocalBurst localBurst =
+                    LocalBurst.initialize(context.getApplicationContext());
+            localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
 
             //initialize
             instance.init(apiBaseUrl, apiAuthorizationToken);
@@ -253,67 +251,6 @@ public class Push {
             deviceApi = retrofit.create(DeviceApi.class);
         }
 
-        //initialize local broadcast receiver to listen for token refresh
-        registerTokenReceiver();
-
-        //initialize local broadcast receiver to listen for push message
-        registerMessageReceiver();
-    }
-
-    private void registerTokenReceiver() {
-        if (registrationTokenReceiver == null) {
-            registrationTokenReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    //check for success synced registration token
-                    boolean isSuccess = intent.getBooleanExtra("success", false);
-
-                    //notify token push listener
-                    if (pushTokenListeners != null && !pushTokenListeners.isEmpty()) {
-                        for (PushTokenListener pushTokenListener : pushTokenListeners) {
-                            //notify success token refresh listener
-                            if (isSuccess) {
-                                pushTokenListener.onRegistrationTokenRefreshed(getDevice());
-                            }
-                            //notify token refresh error listener
-                            else {
-                                String errorMessage = intent.getStringExtra("message");
-                                pushTokenListener.onRegistrationTokenError(errorMessage);
-                            }
-                        }
-                    }
-                }
-            };
-
-            LocalBroadcastManager.getInstance(context).registerReceiver(
-                    registrationTokenReceiver,
-                    new IntentFilter(REGISTRATION_TOKEN_REFRESHED)
-            );
-        }
-    }
-
-    private void registerMessageReceiver() {
-        if (messageReceiver == null) {
-            messageReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    //obtain remote message
-                    RemoteMessage message = (RemoteMessage) intent.getParcelableExtra("message");
-
-                    if ((pushMessageListeners != null) && !pushMessageListeners.isEmpty()) {
-                        for (PushMessageListener pushMessageListener : pushMessageListeners) {
-                            //notify push message listener
-                            pushMessageListener.onMessage(message);
-                        }
-                    }
-                }
-            };
-
-            LocalBroadcastManager.getInstance(context).registerReceiver(
-                    messageReceiver,
-                    new IntentFilter(PUSH_MESSAGE_RECEIVED)
-            );
-        }
     }
 
 
@@ -362,68 +299,86 @@ public class Push {
     }
 
     /**
-     * register push notification message listener
+     * register push listener(s)
      *
      * @param listener
      */
-    public void registerPushMessageListener(PushMessageListener listener) {
-        if (this.pushMessageListeners == null) {
-            this.pushMessageListeners = new HashSet<PushMessageListener>();
+    public void register(Object listener) {
+
+        //ensure listener
+        boolean isValidListener =
+                (listener != null && ((listener instanceof PushMessageListener) ||
+                        (listener instanceof PushTokenListener) ||
+                        (listener instanceof DeviceSyncListener)));
+
+        if (isValidListener) {
+
+            //register push message listener
+            if (listener instanceof PushMessageListener) {
+                if (this.pushMessageListeners == null) {
+                    this.pushMessageListeners = new HashSet<PushMessageListener>();
+                }
+                this.pushMessageListeners.add((PushMessageListener) listener);
+            }
+
+            //register push token listener
+            if (listener instanceof PushTokenListener) {
+                if (this.pushTokenListeners == null) {
+                    this.pushTokenListeners = new HashSet<PushTokenListener>();
+                }
+                this.pushTokenListeners.add((PushTokenListener) listener);
+            }
+
+            //register device sync listener
+            if (listener instanceof DeviceSyncListener) {
+                if (this.deviceSyncListeners == null) {
+                    this.deviceSyncListeners = new HashSet<DeviceSyncListener>();
+                }
+                this.deviceSyncListeners.add((DeviceSyncListener) listener);
+            }
+
         }
-        this.pushMessageListeners.add(listener);
     }
 
     /**
-     * unregister push notification message listener
-     */
-    public void unregisterPushMessageListener(PushMessageListener pushMessageListener) {
-        if (this.pushMessageListeners != null) {
-            this.pushMessageListeners.remove(pushMessageListener);
-        }
-    }
-
-    /**
-     * register push token listener
+     * unregister push listener(s)
      *
-     * @param pushTokenListener
+     * @param listener
      */
-    public void registerPushTokenListener(PushTokenListener pushTokenListener) {
-        if (this.pushTokenListeners == null) {
-            this.pushTokenListeners = new HashSet<PushTokenListener>();
-        }
-        this.pushTokenListeners.add(pushTokenListener);
-    }
+    public void unregister(Object listener) {
 
-    /**
-     * register push token listener
-     */
-    public void unregisterPushTokenListener(PushTokenListener pushTokenListener) {
-        if (this.pushTokenListeners != null) {
-            this.pushTokenListeners.remove(pushTokenListener);
-        }
-    }
+        //ensure listener
+        boolean isValidListener =
+                (listener != null && ((listener instanceof PushMessageListener) ||
+                        (listener instanceof PushTokenListener) ||
+                        (listener instanceof DeviceSyncListener)));
 
-    /**
-     * register device sync listener
-     *
-     * @param deviceSyncListener
-     */
-    public void registerDeviceSyncListener(DeviceSyncListener deviceSyncListener) {
-        if (this.deviceSyncListeners == null) {
-            this.deviceSyncListeners = new HashSet<DeviceSyncListener>();
-        }
-        this.deviceSyncListeners.add(deviceSyncListener);
-    }
+        if (isValidListener) {
 
+            //register push message listener
+            if (listener instanceof PushMessageListener) {
+                if (this.pushMessageListeners == null) {
+                    this.pushMessageListeners.remove((PushMessageListener) listener);
+                }
+            }
 
-    /**
-     * register push token listener
-     */
-    public void unregisterDeviceSyncListener(DeviceSyncListener deviceSyncListener) {
-        if (this.deviceSyncListeners != null) {
-            this.deviceSyncListeners.remove(deviceSyncListener);
+            //register push token listener
+            if (listener instanceof PushTokenListener) {
+                if (this.pushTokenListeners == null) {
+                    this.pushTokenListeners.add((PushTokenListener) listener);
+                }
+            }
+
+            //register device sync listener
+            if (listener instanceof DeviceSyncListener) {
+                if (this.deviceSyncListeners == null) {
+                    this.deviceSyncListeners.add((DeviceSyncListener) listener);
+                }
+            }
+
         }
     }
+
 
     /**
      * save server api endpoint to post and update device push details
@@ -1040,4 +995,47 @@ public class Push {
         editor.apply();
     }
 
+
+    @Override
+    public void onBroadcast(String action, Bundle extras) {
+
+        //handle refreshed token
+        if (action.equals(REGISTRATION_TOKEN_REFRESHED)) {
+            //check for success synced registration token
+            boolean isSuccess = extras.getBoolean(Push.SUCCESS, false);
+
+            //notify push token listener
+            if (pushTokenListeners != null && !pushTokenListeners.isEmpty()) {
+                for (PushTokenListener pushTokenListener : pushTokenListeners) {
+                    //notify success token refresh listener
+                    if (isSuccess) {
+                        pushTokenListener.onRegistrationTokenRefreshed(getDevice());
+                    }
+                    //notify token refresh error listener
+                    else {
+                        String errorMessage = extras.getString(Push.MESSAGE);
+                        pushTokenListener.onRegistrationTokenError(errorMessage);
+                    }
+                }
+            }
+        }
+
+        //handle push message received
+        if (action.equals(PUSH_MESSAGE_RECEIVED)) {
+            //obtain remote message
+            RemoteMessage message = (RemoteMessage) extras.getParcelable(Push.MESSAGE);
+
+            if ((pushMessageListeners != null) && !pushMessageListeners.isEmpty()) {
+                for (PushMessageListener pushMessageListener : pushMessageListeners) {
+                    //notify push message listener
+                    pushMessageListener.onMessage(message);
+                }
+            }
+        }
+
+        //handle device synced
+        if (action.equals(DEVICE_SYNCED)) {
+
+        }
+    }
 }

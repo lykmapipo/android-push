@@ -2,11 +2,14 @@ package com.github.lykmapipo.push.services;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
+import android.os.Bundle;
+
+import com.github.lykmapipo.localburst.LocalBurst;
 import com.github.lykmapipo.push.Push;
 import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.receivers.NetworkChangeReceiver;
 import com.google.firebase.iid.FirebaseInstanceId;
+
 import retrofit2.Response;
 
 /**
@@ -59,9 +62,9 @@ public class DeviceSyncService extends IntentService {
                 if ((response != null) && response.isSuccessful()) {
 
                     //notify registration token updated or created successfully
-                    Intent successIntent = new Intent(Push.REGISTRATION_TOKEN_REFRESHED);
-                    successIntent.putExtra("success", true);
-                    LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(successIntent);
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(Push.SUCCESS, true);
+                    LocalBurst.$emit(Push.REGISTRATION_TOKEN_REFRESHED, bundle);
 
                 }
             }
@@ -72,10 +75,10 @@ public class DeviceSyncService extends IntentService {
         } catch (Exception e) {
 
             //notify registration token update or create error
-            Intent failIntent = new Intent(Push.REGISTRATION_TOKEN_REFRESHED);
-            failIntent.putExtra("success", false);
-            failIntent.putExtra("message", e.getMessage());
-            LocalBroadcastManager.getInstance(getApplication()).sendBroadcast(failIntent);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(Push.SUCCESS, false);
+            bundle.putString(Push.MESSAGE, e.getMessage());
+            LocalBurst.$emit(Push.REGISTRATION_TOKEN_REFRESHED, bundle);
 
             //reschedule push device details sync in case of any exception
             NetworkChangeReceiver.completeWakefulIntent(intent);

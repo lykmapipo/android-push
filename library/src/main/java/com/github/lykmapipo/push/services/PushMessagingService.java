@@ -1,7 +1,8 @@
 package com.github.lykmapipo.push.services;
 
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
+import android.os.Bundle;
+
+import com.github.lykmapipo.localburst.LocalBurst;
 import com.github.lykmapipo.push.Push;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -23,8 +24,8 @@ public class PushMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage message) {
         //broadcast received push message
-        Intent intent = new Intent(Push.PUSH_MESSAGE_RECEIVED);
-        intent.putExtra("message", message);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Push.MESSAGE, message);
+        LocalBurst.$emit(Push.PUSH_MESSAGE_RECEIVED, bundle);
     }
 }
