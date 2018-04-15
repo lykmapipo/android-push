@@ -7,15 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Base64;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.WindowManager;
 
 import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.api.DeviceApi;
@@ -997,11 +993,8 @@ public class Push {
         /** @see Build.BRAND */
         deviceInfo.put(Device.BRAND, asEmpty(Build.BRAND));
 
-        /** @see Locale */
-        deviceInfo.put(Device.COUNTRY_CODE, asEmpty(getCountryCode()));
-
-        /** @see Locale */
-        deviceInfo.put(Device.COUNTRY_NAME, asEmpty(getCountryName()));
+        //merge locale info
+        deviceInfo.putAll(Utils.getLocaleInfo(context));
 
         /** @see Build.DEVICE */
         deviceInfo.put(Device.DEVICE, asEmpty(Build.DEVICE));
@@ -1015,11 +1008,6 @@ public class Push {
         /** @see Build.HARDWARE */
         deviceInfo.put(Device.HARDWARE, asEmpty(Build.HARDWARE));
 
-        /** @see Locale */
-        deviceInfo.put(Device.LANGUAGE_CODE, asEmpty(getLanguageCode()));
-
-        /** @see Locale */
-        deviceInfo.put(Device.LANGUAGE_NAME, asEmpty(getLanguageName()));
 
         /** @see Build.MANUFACTURER */
         deviceInfo.put(Device.MANUFACTURER, asEmpty(Build.MANUFACTURER));
@@ -1039,23 +1027,13 @@ public class Push {
         /** @see Build.getRadioVersion() */
         deviceInfo.put(Device.RADIO_VERSION, asEmpty(Build.getRadioVersion()));
 
-        /** @see DisplayMetrics */
-        deviceInfo.put(Device.SCREEN_DENSITY, asEmpty(getScreenDensity()));
-
-        /** @see WindowManager */
-        deviceInfo.put(Device.SCREEN_HEIGHT, asEmpty(String.valueOf(getScreenHeight())));
-
-        /** @see WindowManager */
-        deviceInfo.put(Device.SCREEN_WIDTH, asEmpty(String.valueOf(getScreenWidth())));
+        deviceInfo.putAll(Utils.getDisplayInfo(context));
 
         /** @see Build.VERSION.SDK_INT */
         deviceInfo.put(Device.SDK, asEmpty(String.valueOf(Build.VERSION.SDK_INT)));
 
         /** @see Build.SERIAL */
         deviceInfo.put(Device.SERIAL, asEmpty(Build.SERIAL));
-
-        /** @see TimeZone */
-        deviceInfo.put(Device.TIMEZONE, asEmpty(getTimezone()));
 
         /** @see Build.TYPE */
         deviceInfo.put(Device.TYPE, asEmpty(Build.TYPE));
@@ -1066,216 +1044,14 @@ public class Push {
         /** @see Build.USER */
         deviceInfo.put(Device.TAGS, asEmpty(Build.TAGS));
 
-        /** @see PackageInfo */
-        deviceInfo.put(Device.VERSION_CODE, asEmpty(String.valueOf(getVersionCode())));
-
-        /** @see PackageInfo */
-        deviceInfo.put(Device.VERSION_NAME, asEmpty(String.valueOf(getVersionName())));
+        //merge package info
+        deviceInfo.putAll(Utils.getPackageInfo(context));
 
         //merge storage information
         deviceInfo.putAll(Utils.getMemoryInfo(context));
 
         return deviceInfo;
 
-    }
-
-    /**
-     * Derive screen density
-     *
-     * @return
-     */
-    public String getScreenDensity() {
-        String screenType = "";
-        try {
-            int density = context.getResources().getDisplayMetrics().densityDpi;
-            switch (density) {
-                case DisplayMetrics.DENSITY_LOW:
-                    screenType = "ldpi";
-                    break;
-                case DisplayMetrics.DENSITY_MEDIUM:
-                    screenType = "mdpi";
-                    break;
-                case DisplayMetrics.DENSITY_HIGH:
-                    screenType = "hdpi";
-                    break;
-                case DisplayMetrics.DENSITY_XHIGH:
-                    screenType = "xhdpi";
-                    break;
-                default:
-                    screenType = "other";
-                    break;
-            }
-        } catch (Exception e) {
-            screenType = "";
-        }
-        return screenType;
-    }
-
-
-    /**
-     * Device device screen height
-     *
-     * @return
-     */
-    public int getScreenHeight() {
-        int height = 0;
-        try {
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            Point size = new Point();
-            //display.getRealSize(outPoint); // include navigation bar
-            display.getSize(size);
-            height = size.y;
-        } catch (Exception e) {
-            height = 0;
-        }
-        return height;
-    }
-
-    /**
-     * Derive screen width
-     *
-     * @return
-     */
-    public int getScreenWidth() {
-        int width = 0;
-        try {
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            Point size = new Point();
-            //display.getRealSize(outPoint); // include navigation bar
-            display.getSize(size);
-            width = size.x;
-        } catch (Exception e) {
-            width = 0;
-        }
-        return width;
-    }
-
-
-    /**
-     * Derive device country code
-     *
-     * @return
-     */
-    public String getCountryCode() {
-        String countryCode = "";
-        try {
-            Locale locale = context.getResources().getConfiguration().locale;
-            countryCode = locale.getCountry();
-        } catch (Exception e) {
-            countryCode = "";
-        }
-
-        return countryCode;
-
-    }
-
-    /**
-     * Derive device country name
-     *
-     * @return
-     */
-    public String getCountryName() {
-        String countryName = "";
-        try {
-            Locale locale = context.getResources().getConfiguration().locale;
-            countryName = locale.getDisplayCountry();
-        } catch (Exception e) {
-            countryName = "";
-        }
-
-        return countryName;
-
-    }
-
-    /**
-     * Derive device language code
-     *
-     * @return
-     */
-    public String getLanguageCode() {
-        String languageCode = "";
-        try {
-            Locale locale = context.getResources().getConfiguration().locale;
-            languageCode = locale.getLanguage();
-        } catch (Exception e) {
-            languageCode = "";
-        }
-
-        return languageCode;
-
-    }
-
-    /**
-     * Derive device language name
-     *
-     * @return
-     */
-    public String getLanguageName() {
-        String languageName = "";
-        try {
-            Locale locale = context.getResources().getConfiguration().locale;
-            languageName = locale.getDisplayLanguage();
-        } catch (Exception e) {
-            languageName = "";
-        }
-
-        return languageName;
-
-    }
-
-    /**
-     * Derive device timezone
-     *
-     * @return
-     */
-    public String getTimezone() {
-        String timezone = "";
-        try {
-            TimeZone timeZone = TimeZone.getDefault();
-            timezone = timeZone.getID();
-        } catch (Exception e) {
-            timezone = "";
-        }
-
-        return timezone;
-    }
-
-    /**
-     * Derive application version name
-     *
-     * @return
-     */
-    public String getVersionName() {
-        String versionName = "";
-        try {
-            PackageInfo packageInfo;
-            packageInfo =
-                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            versionName = packageInfo.versionName;
-        } catch (Exception e1) {
-            versionName = "";
-        }
-        return versionName;
-    }
-
-    /**
-     * Derive application version code
-     *
-     * @return
-     */
-    public Integer getVersionCode() {
-        Integer versionCode = null;
-        try {
-            PackageInfo packageInfo;
-            packageInfo =
-                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            versionCode = packageInfo.versionCode;
-        } catch (Exception e1) {
-            versionCode = null;
-        }
-        return versionCode;
     }
 
 

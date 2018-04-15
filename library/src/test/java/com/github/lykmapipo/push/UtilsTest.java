@@ -98,4 +98,96 @@ public class UtilsTest {
         assertThat(memoryInfo.get(Device.TOTAL_INTERNAL_MEMORY_SIZE), is(notNullValue()));
         assertThat(memoryInfo.get(Device.TOTAL_RAM), is(notNullValue()));
     }
+
+    @Test
+    public void shouldBeAbleToGetDeviceScreenDensity() {
+        String screenDensity = Utils.getScreenDensity(context);
+        assertThat(screenDensity, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceScreenHeight() {
+        long screenHeight = Utils.getScreenHeight(context);
+        assertThat(screenHeight, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceScreenWidth() {
+        long screenWidth = Utils.getScreenWidth(context);
+        assertThat(screenWidth, is(notNullValue()));
+    }
+
+
+    @Test
+    public void shouldBeAbleToGetDisplayInfo() {
+        Map<String, String> displayInfo = Utils.getDisplayInfo(context);
+
+        //assert display info
+        assertThat(displayInfo.get(Device.SCREEN_DENSITY), is(notNullValue()));
+        assertThat(displayInfo.get(Device.SCREEN_HEIGHT), is(notNullValue()));
+        assertThat(displayInfo.get(Device.SCREEN_WIDTH), is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceCountryCode() {
+        String countryCode = Utils.getCountryCode(context);
+        assertThat(countryCode, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceCountryName() {
+        String countryName = Utils.getCountryName(context);
+        assertThat(countryName, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceLanguageCode() {
+        String languageCode = Utils.getLanguageCode(context);
+        assertThat(languageCode, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceLanguageName() {
+        String languageName = Utils.getLanguageName(context);
+        assertThat(languageName, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceTimezone() {
+        String timezone = Utils.getTimezone();
+        assertThat(timezone, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetLocaleInfo() {
+        Map<String, String> localeInfo = Utils.getLocaleInfo(context);
+
+        //assert display info
+        assertThat(localeInfo.get(Device.COUNTRY_CODE), is(notNullValue()));
+        assertThat(localeInfo.get(Device.COUNTRY_NAME), is(notNullValue()));
+        assertThat(localeInfo.get(Device.LANGUAGE_CODE), is(notNullValue()));
+        assertThat(localeInfo.get(Device.LANGUAGE_NAME), is(notNullValue()));
+        assertThat(localeInfo.get(Device.TIMEZONE), is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetPackageVersionName() {
+        String versionName = Utils.getVersionName(context);
+        assertThat(versionName, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetPackageVersionCode() {
+        String versionCode = Utils.getVersionCode(context);
+        assertThat(versionCode, is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBeAbleToGetPackageInfo() {
+        Map<String, String> packageInfo = Utils.getPackageInfo(context);
+
+        //assert package info
+        assertThat(packageInfo.get(Device.VERSION_NAME), is(notNullValue()));
+        assertThat(packageInfo.get(Device.VERSION_CODE), is(notNullValue()));
+    }
 }
