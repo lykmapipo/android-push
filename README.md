@@ -19,7 +19,7 @@ add `android-push` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.lykmapipo:android-push:v0.5.0'
+    compile 'com.github.lykmapipo:android-push:v0.6.0'
 }
 ```
 
