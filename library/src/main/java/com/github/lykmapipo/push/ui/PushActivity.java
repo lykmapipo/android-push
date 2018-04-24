@@ -13,7 +13,7 @@ import com.github.lykmapipo.push.PushTokenListener;
  * base push aware activity
  *
  * @author lally elias
- * @email lallyelias87@gmail.com, lally.elias@byteskode.com
+ * @email lallyelias87@gmail.com
  * @date 11/01/16
  */
 public abstract class PushActivity extends Activity
@@ -22,39 +22,25 @@ public abstract class PushActivity extends Activity
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-        register();
+        Push.$register(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        register();
+        Push.$register(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        register();
-    }
-
-    private void register() {
-        if (isGooglePlayServiceAvailable()) {
-            Push push = Push.getInstance();
-
-            //register listeners
-            push.register(this);
-        }
+        Push.$register(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        Push push = Push.getInstance();
-
-        //unregister listener
-        push.unregister(this);
-
+        Push.$unregister(this);
     }
 
     /**

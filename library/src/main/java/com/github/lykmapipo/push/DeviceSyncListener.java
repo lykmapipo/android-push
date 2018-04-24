@@ -6,7 +6,7 @@ import com.github.lykmapipo.push.api.Device;
  * device sync listener
  *
  * @author lally elias
- * @email lallyelias87@gmail.com, lally.elias@byteskode.com
+ * @email lallyelias87@gmail.com
  * @date 10/18/16
  */
 public interface DeviceSyncListener {

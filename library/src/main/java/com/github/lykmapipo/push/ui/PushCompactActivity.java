@@ -14,7 +14,7 @@ import com.github.lykmapipo.push.PushTokenListener;
  * base push aware compact activity
  *
  * @author lally elias
- * @email lallyelias87@gmail.com, lally.elias@byteskode.com
+ * @email lallyelias87@gmail.com
  * @date 11/01/16
  */
 public abstract class PushCompactActivity extends AppCompatActivity
@@ -23,13 +23,13 @@ public abstract class PushCompactActivity extends AppCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-        register();
+        Push.$register(this);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        register();
+        Push.$register(this);
     }
 
     @Override
@@ -38,17 +38,9 @@ public abstract class PushCompactActivity extends AppCompatActivity
         Push.$register(this);
     }
 
-    private void register() {
-        if (isGooglePlayServiceAvailable()) {
-            Push push = Push.getInstance();
-            push.register(this);
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
-        Push.$register(this);
     }
 
     @Override
