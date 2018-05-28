@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 60
-        versionName "0.7.0"
+        versionCode 80
+        versionName "0.8.0"
         consumerProguardFiles 'proguard-rules.pro'
     }
     compileOptions {
@@ -24,8 +24,9 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api "com.android.support:support-v4:${APPCOMPAT_VERSION}"
     api "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
-    implementation "com.google.android.gms:play-services-base:${FCM_VERSION}"
-    api "com.google.firebase:firebase-messaging:${FCM_VERSION}"
+    implementation "com.google.android.gms:play-services-base:${PLAY_SERVICE_BASE_VERSION}"
+    api "com.google.firebase:firebase-core:${FIREBASE_CORE_VERSION}"
+    api "com.google.firebase:firebase-messaging:${FIREBASE_MESSAGING_VERSION}"
     implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
     api "com.github.lykmapipo:local-burst:${LOCALBURST_VERSION}"
