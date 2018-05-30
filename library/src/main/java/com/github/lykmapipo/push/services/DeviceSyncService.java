@@ -70,6 +70,10 @@ public class DeviceSyncService extends IntentService {
 
                 if ((response != null) && response.isSuccessful()) {
 
+                    //update device
+                    Device device = response.body();
+                    push.merge(device);
+
                     //notify registration token updated or created successfully
                     Bundle bundle = new Bundle();
                     bundle.putBoolean(Push.SUCCESS, true);

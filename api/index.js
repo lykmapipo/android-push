@@ -26,8 +26,12 @@ app.post('/devices', (request, response) => {
     console.log('POST Body: ', request.body);
 
     //echo back
+    const result = request.body;
+    result.extras.account = 'ABCDR';
+    result.info.imei = '90372y24';
+    result.topics = [].concat(result.topics).concat('news');
     response.status(201);
-    response.json(request.body);
+    response.json(result);
 });
 
 
@@ -42,8 +46,12 @@ app.put('/devices', (request, response) => {
     console.log('PUT Body: ', request.body);
 
     //echo back
-    response.status(200)
-    response.json(request.body);
+    const result = request.body;
+    result.extras.account = 'ABCDR';
+    result.info.imei = '90372y24';
+    result.topics = [].concat(result.topics).concat('news');
+    response.status(200);
+    response.json(result);
 });
 
 

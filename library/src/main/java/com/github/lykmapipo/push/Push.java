@@ -352,6 +352,53 @@ public class Push implements LocalBurst.OnBroadcastListener {
         return instanceId;
     }
 
+    /**
+     * merge device details
+     *
+     * @return {@link Device}
+     */
+    public Device merge(Device device) {
+
+        //get current device
+        Device _device = getDevice();
+
+        //1...merge extras
+        HashMap<String, String> extras = new HashMap<String, String>();
+
+        //1.1...merge existing extras
+        extras.putAll(_device.getExtras());
+
+        //1.2...merge provided extras
+        extras.putAll(device.getExtras());
+
+        //1.3...update existing extras
+        setExtras(extras);
+
+        //2...merge info
+        HashMap<String, String> info = new HashMap<String, String>();
+
+        //2.1...merge existing info
+        info.putAll(_device.getInfo());
+
+        //2.2...merge provided info
+        info.putAll(device.getInfo());
+
+        //2.3...update existing info
+        setInfo(info);
+
+        //3...merge topics
+        HashSet<String> topics = new HashSet<String>();
+        topics.addAll(device.getTopics());
+        for (String topic : topics) {
+            subscribe(topic);
+        }
+
+
+        //return new device
+        _device = getDevice();
+        return _device;
+    }
+
 
     /**
      * Subscribe to a given push topic
@@ -361,6 +408,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
      */
     public Set<String> subscribe(String topic) {
         try {
+            Set<String> topics = getTopics();
             //add topic to application push topics
             if ((topic != null) && !topic.isEmpty()) {
                 topics.add(topic);
@@ -374,10 +422,10 @@ public class Push implements LocalBurst.OnBroadcastListener {
             //subscribe application to firebase push topic
             FirebaseMessaging.getInstance().subscribeToTopic(topic);
 
-            return topics;
+            return getTopics();
 
         } catch (Exception e) {
-            return topics;
+            return getTopics();
         }
     }
 
@@ -390,6 +438,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
      */
     public Set<String> unsubscribe(String topic) {
         try {
+            Set<String> topics = getTopics();
             if ((topic != null) & !topic.isEmpty()) {
                 topics.remove(topic);
             }
@@ -402,9 +451,9 @@ public class Push implements LocalBurst.OnBroadcastListener {
             //un subscribe application from firebase push topic
             FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
 
-            return topics;
+            return getTopics();
         } catch (Exception e) {
-            return topics;
+            return getTopics();
         }
     }
 
