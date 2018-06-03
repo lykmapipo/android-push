@@ -179,10 +179,17 @@ public class PushTest {
     }
 
     @Test
-    public void shouldBeAbleToGetDeviceExtra() {
+    public void shouldBeAbleToGetDeviceExtra_Single() {
         Push push = Push.getInstance();
         push.putExtra("phone", "11111111111");
         String extra = push.getExtra("phone");
+        assertThat(extra, equalTo("11111111111"));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceExtra_Single_O1() {
+        Push push = Push.getInstance();
+        String extra = push.getExtra("account", "11111111111");
         assertThat(extra, equalTo("11111111111"));
     }
 
@@ -250,6 +257,13 @@ public class PushTest {
         Push push = Push.getInstance();
         push.putInfo("phone", "11111111111");
         String info = push.getInfo("phone");
+        assertThat(info, equalTo("11111111111"));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceInfo_Single_01() {
+        Push push = Push.getInstance();
+        String info = push.getInfo("guid", "11111111111");
         assertThat(info, equalTo("11111111111"));
     }
 

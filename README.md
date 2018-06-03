@@ -19,7 +19,7 @@ add `android-push` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.lykmapipo:android-push:v0.8.0'
+    compile 'com.github.lykmapipo:android-push:v0.10.0'
 }
 ```
 
@@ -150,19 +150,6 @@ The structure of the information synced to the API end-point is as below:
 ## Contribute
 It will be nice, if you open an issue first so that we can know what is going on, then, fork this repo and push in your ideas.
 Do not forget to add a bit of test(s) of what value you adding.
-
-## TODO
-- [ ] do lazy initialization on `Push.initialize()` and move heavy initialization on `getInstance()`
-- [ ] drop async task and use intent service with localbroadcasts
-- [ ] update Device to add phone, email & user details
-- [ ] expose ability to get device from push instance
-- [ ] add ability to update device from push instance
-- [ ] add ability to set extra using key-value
-- [ ] add ability to set more info using key-value
-- [ ] rename device to installation
-- [ ] should allow send abitrary command on sync
-- [ ] sync using device uuid that push registration token
-- [ ] add api implementation on top of nodejs and mongodb
 
 ## License
 

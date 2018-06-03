@@ -526,6 +526,21 @@ public class Push implements LocalBurst.OnBroadcastListener {
         return _info;
     }
 
+    /**
+     * obtain device info
+     *
+     * @param key
+     * @return
+     */
+    public String getInfo(String key, String defaultValue) {
+        Map<String, String> info = getInfo();
+        String _info = info.get(key);
+        if (_info == null) {
+            _info = defaultValue;
+        }
+        return _info;
+    }
+
 
     /**
      * set application extra details on a push device
@@ -579,6 +594,21 @@ public class Push implements LocalBurst.OnBroadcastListener {
     public String getExtra(String key) {
         Map<String, String> extras = getExtras();
         return extras.get(key);
+    }
+
+    /**
+     * obtain device(installation) extra detail
+     *
+     * @param key
+     * @return
+     */
+    public String getExtra(String key, String defaultValue) {
+        Map<String, String> extras = getExtras();
+        String extra = extras.get(key);
+        if (extra == null) {
+            extra = defaultValue;
+        }
+        return extra;
     }
 
 
