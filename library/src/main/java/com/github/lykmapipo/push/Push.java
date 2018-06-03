@@ -3,12 +3,12 @@ package com.github.lykmapipo.push;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.github.lykmapipo.localburst.LocalBurst;
+import com.github.lykmapipo.preference.Preferences;
 import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.api.DeviceApi;
 import com.github.lykmapipo.push.services.DeviceSyncService;
@@ -99,10 +99,6 @@ public class Push implements LocalBurst.OnBroadcastListener {
      */
     private String apiAuthorizationToken = "";
 
-    /**
-     * shared preference instance
-     */
-    private SharedPreferences preferences;
 
     /**
      * set of application subscribed push topics
@@ -179,6 +175,9 @@ public class Push implements LocalBurst.OnBroadcastListener {
 
         if (instance == null) {
 
+            //initialize preference
+            Preferences.initialize(context.getApplicationContext());
+
             //instantiate new push
             instance = new Push(context.getApplicationContext(), apiBaseUrl, apiAuthorizationToken);
 
@@ -220,10 +219,6 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * initialize push internal
      */
     private void init() {
-
-        //obtain preference manager
-        this.preferences =
-                PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 
         //initialize device server api endpoints
         if ((this.deviceApi == null) && (this.apiBaseUrl != null) && !this.apiBaseUrl.isEmpty()) {
@@ -406,18 +401,18 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @param topic
      * @see com.google.firebase.messaging.FirebaseMessaging
      */
-    public Set<String> subscribe(String topic) {
+    public Set<String> subscribe(@NonNull String topic) {
         try {
+
             Set<String> topics = getTopics();
+
             //add topic to application push topics
-            if ((topic != null) && !topic.isEmpty()) {
+            if (!TextUtils.isEmpty(topic)) {
                 topics.add(topic);
             }
 
             // persist application push topics
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putStringSet(TOPICS_PREF_KEY, topics);
-            editor.apply();
+            Preferences.set(TOPICS_PREF_KEY, topics);
 
             //subscribe application to firebase push topic
             FirebaseMessaging.getInstance().subscribeToTopic(topic);
@@ -436,17 +431,17 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @param topic
      * @see com.google.firebase.messaging.FirebaseMessaging
      */
-    public Set<String> unsubscribe(String topic) {
+    public Set<String> unsubscribe(@NonNull String topic) {
         try {
+
             Set<String> topics = getTopics();
-            if ((topic != null) & !topic.isEmpty()) {
+
+            if (!TextUtils.isEmpty(topic)) {
                 topics.remove(topic);
             }
 
             //persist application push topics
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putStringSet(TOPICS_PREF_KEY, topics);
-            editor.apply();
+            Preferences.set(TOPICS_PREF_KEY, topics);
 
             //un subscribe application from firebase push topic
             FirebaseMessaging.getInstance().unsubscribeFromTopic(topic);
@@ -463,7 +458,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @return topics
      */
     public Set<String> getTopics() {
-        Set<String> topics = preferences.getStringSet(TOPICS_PREF_KEY, this.topics);
+        Set<String> topics = Preferences.get(TOPICS_PREF_KEY, this.topics);
         return topics;
     }
 
@@ -618,16 +613,16 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @param token
      * @return registrationToken
      */
-    public String setRegistrationToken(String token) {
+    public String setRegistrationToken(@NonNull String token) {
+
         //persist push registration token
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(REGISTRATION_TOKEN_PREF_KEY, token);
-        editor.apply();
+        Preferences.set(REGISTRATION_TOKEN_PREF_KEY, token);
 
         //set instance latest registration token
         registrationToken = token;
 
         return registrationToken;
+
     }
 
 
@@ -637,7 +632,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @return registrationToken
      */
     public String getRegistrationToken() {
-        String token = preferences.getString(REGISTRATION_TOKEN_PREF_KEY, registrationToken);
+        String token = Preferences.get(REGISTRATION_TOKEN_PREF_KEY, registrationToken);
         return token;
     }
 
@@ -826,7 +821,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
 
         HashMap<String, String> preferences = new HashMap<String, String>();
 
-        Set<String> preferenceSet = this.preferences.getStringSet(key, new HashSet<String>());
+        Set<String> preferenceSet = Preferences.get(key, new HashSet<String>());
 
         for (String preference : preferenceSet) {
 
@@ -868,9 +863,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
                 dataSet.add(value);
             }
 
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putStringSet(key, dataSet);
-            editor.apply();
+            Preferences.set(key, dataSet);
 
         } catch (Exception e) {
         }
@@ -912,12 +905,10 @@ public class Push implements LocalBurst.OnBroadcastListener {
      */
     public void clear() {
         //clear all push preferences
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(REGISTRATION_TOKEN_PREF_KEY);
-        editor.remove(TOPICS_PREF_KEY);
-        editor.remove(EXTRAS_PREF_KEY);
-        editor.remove(INFO_PREF_KEY);
-        editor.apply();
+        Preferences.remove(
+                REGISTRATION_TOKEN_PREF_KEY, TOPICS_PREF_KEY,
+                EXTRAS_PREF_KEY, INFO_PREF_KEY
+        );
     }
 
 

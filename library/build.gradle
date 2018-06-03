@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 100
-        versionName "0.10.0"
+        versionCode 110
+        versionName "0.11.0"
         consumerProguardFiles 'proguard-rules.pro'
     }
     compileOptions {
@@ -30,6 +30,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
     api "com.github.lykmapipo:local-burst:${LOCALBURST_VERSION}"
+    api "com.github.lykmapipo:android-preference:${ANDROID_PREFERENCE_VERSION}"
 
     //test dependencies
     testImplementation "junit:junit:${JUNIT_VERSION}"
