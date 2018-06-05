@@ -16,4 +16,11 @@ public interface DeviceSyncListener {
      * @param device
      */
     void onDeviceSynced(Device device);
+
+    /**
+     * called once device sync failed
+     *
+     * @param error
+     */
+    void onDeviceSyncError(String error);
 }

@@ -94,4 +94,9 @@ public class MainActivity extends PushCompactActivity {
         Toast.makeText(MainActivity.this, "Device Synced", Toast.LENGTH_SHORT).show();
 
     }
+
+    @Override
+    public void onDeviceSyncError(String error) {
+        Log.d(TAG, "DEVICE SYNC ERROR: " + error);
+    }
 }

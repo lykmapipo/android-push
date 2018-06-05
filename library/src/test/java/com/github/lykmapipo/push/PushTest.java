@@ -194,6 +194,38 @@ public class PushTest {
     }
 
     @Test
+    public void shouldBeAbleToGetDeviceExtra_Single_Float() {
+        Push push = Push.getInstance();
+        push.putExtra("float", 29.09F);
+        Float extra = push.getExtra("float", 0F);
+        assertThat(extra, equalTo(29.09F));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceExtra_Single_Long() {
+        Push push = Push.getInstance();
+        push.putExtra("long", 2909L);
+        Long extra = push.getExtra("long", 0L);
+        assertThat(extra, equalTo(2909L));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceExtra_Single_Integer() {
+        Push push = Push.getInstance();
+        push.putExtra("int", 2909);
+        Integer extra = push.getExtra("int", 0);
+        assertThat(extra, equalTo(2909));
+    }
+
+    @Test
+    public void shouldBeAbleToGetDeviceExtra_Single_Boolean() {
+        Push push = Push.getInstance();
+        push.putExtra("boolean", true);
+        Boolean extra = push.getExtra("boolean", false);
+        assertThat(extra, equalTo(true));
+    }
+
+    @Test
     public void shouldBeAbleToGetExistingDeviceInfo() {
         Push push = Push.getInstance();
         Map<String, String> info = push.getInfo();

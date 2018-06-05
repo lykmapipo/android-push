@@ -19,7 +19,7 @@ add `android-push` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.lykmapipo:android-push:v0.11.0'
+    compile 'com.github.lykmapipo:android-push:v0.12.0'
 }
 ```
 
@@ -53,16 +53,6 @@ public class MainActivity extends PushCompactActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onMessage(RemoteMessage remoteMessage) {
         ...
     }
@@ -79,6 +69,11 @@ public class MainActivity extends PushCompactActivity {
      
      @Override
       public void onDeviceSynced(Device device) {
+        ...
+      }
+      
+      @Override
+      public void onDeviceSyncError(String error) {
         ...
       }
 }
@@ -136,7 +131,7 @@ The structure of the information synced to the API end-point is as below:
        serial: String 
     },
     extras:{ //application specific extra details about the installation
-        
+   
     }
 }
 ```

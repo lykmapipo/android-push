@@ -570,6 +570,75 @@ public class Push implements LocalBurst.OnBroadcastListener {
         return extras;
     }
 
+
+    /**
+     * add application specific extra details
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Map<String, String> putExtra(String key, Float value) {
+        try {
+            String _value = String.valueOf(value);
+            return putExtra(key, _value);
+        } catch (Exception e) {
+            return getExtras();
+        }
+    }
+
+
+    /**
+     * add application specific extra details
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Map<String, String> putExtra(String key, Long value) {
+        try {
+            String _value = String.valueOf(value);
+            return putExtra(key, _value);
+        } catch (Exception e) {
+            return getExtras();
+        }
+    }
+
+
+    /**
+     * add application specific extra details
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Map<String, String> putExtra(String key, Integer value) {
+        try {
+            String _value = String.valueOf(value);
+            return putExtra(key, _value);
+        } catch (Exception e) {
+            return getExtras();
+        }
+    }
+
+
+    /**
+     * add application specific extra details
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Map<String, String> putExtra(String key, Boolean value) {
+        try {
+            String _value = String.valueOf(value);
+            return putExtra(key, _value);
+        } catch (Exception e) {
+            return getExtras();
+        }
+    }
+
+
     /**
      * obtain device(installation) extra details
      *
@@ -579,6 +648,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
         Map<String, String> extras = getMapOfPreferences(EXTRAS_PREF_KEY);
         return extras;
     }
+
 
     /**
      * obtain device(installation) extra detail
@@ -590,6 +660,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
         Map<String, String> extras = getExtras();
         return extras.get(key);
     }
+
 
     /**
      * obtain device(installation) extra detail
@@ -604,6 +675,78 @@ public class Push implements LocalBurst.OnBroadcastListener {
             extra = defaultValue;
         }
         return extra;
+    }
+
+
+    /**
+     * obtain device(installation) extra detail
+     *
+     * @param key
+     * @return
+     */
+    public Float getExtra(String key, Float defaultValue) {
+        try {
+            Map<String, String> extras = getExtras();
+            String extra = extras.get(key);
+            Float _extra = Float.valueOf(extra);
+            return _extra;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+
+    /**
+     * obtain device(installation) extra detail
+     *
+     * @param key
+     * @return
+     */
+    public Long getExtra(String key, Long defaultValue) {
+        try {
+            Map<String, String> extras = getExtras();
+            String extra = extras.get(key);
+            Long _extra = Long.valueOf(extra);
+            return _extra;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+
+    /**
+     * obtain device(installation) extra detail
+     *
+     * @param key
+     * @return
+     */
+    public Integer getExtra(String key, Integer defaultValue) {
+        try {
+            Map<String, String> extras = getExtras();
+            String extra = extras.get(key);
+            Integer _extra = Integer.valueOf(extra);
+            return _extra;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+
+    /**
+     * obtain device(installation) extra detail
+     *
+     * @param key
+     * @return
+     */
+    public Boolean getExtra(String key, Boolean defaultValue) {
+        try {
+            Map<String, String> extras = getExtras();
+            String extra = extras.get(key);
+            Boolean _extra = Boolean.valueOf(extra);
+            return _extra;
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
 
 
@@ -957,12 +1100,17 @@ public class Push implements LocalBurst.OnBroadcastListener {
             //notify device sync listener
             if (deviceSyncListeners != null && !deviceSyncListeners.isEmpty()) {
                 for (DeviceSyncListener deviceSyncListener : deviceSyncListeners) {
+
                     //notify success device sync listener
                     if (isSuccess) {
                         deviceSyncListener.onDeviceSynced(getDevice());
                     }
 
-                    //TODO notify device sync error listener
+                    //notify device sync error listener
+                    else {
+                        String errorMessage = extras.getString(Push.MESSAGE);
+                        deviceSyncListener.onDeviceSyncError(errorMessage);
+                    }
 
                 }
             }
