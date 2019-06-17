@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
     lintOptions {
         abortOnError false
     }
@@ -10,7 +9,7 @@ android {
     defaultConfig {
         applicationId "com.github.lykmapipo.push.sample"
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 10
         versionName "0.1.0"
     }
