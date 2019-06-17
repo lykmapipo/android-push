@@ -6,7 +6,7 @@ group = 'com.github.lykmapipo'
 android {
     compileSdkVersion 28
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode 120
         versionName "0.12.0"
@@ -16,26 +16,33 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api "com.android.support:support-v4:${APPCOMPAT_VERSION}"
-    api "com.android.support:appcompat-v7:${APPCOMPAT_VERSION}"
-    implementation "com.google.android.gms:play-services-base:${PLAY_SERVICE_BASE_VERSION}"
+    api "androidx.annotation:annotation:${ANDROIDX_ANNOTATION_VERSION}"
+    api "androidx.legacy:legacy-support-v4:${ANDROIDX_LEGACY_SUPPORT_VERSION}"
+    api "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT_VERSION}"
+    api "com.google.android.gms:play-services-base:${PLAY_SERVICE_BASE_VERSION}"
     api "com.google.firebase:firebase-core:${FIREBASE_CORE_VERSION}"
     api "com.google.firebase:firebase-messaging:${FIREBASE_MESSAGING_VERSION}"
-    implementation "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
-    implementation "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    api "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
+    api "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
     api "com.github.lykmapipo:local-burst:${LOCALBURST_VERSION}"
     api "com.github.lykmapipo:android-preference:${ANDROID_PREFERENCE_VERSION}"
 
-    //test dependencies
+    // test dependencies
     testImplementation "junit:junit:${JUNIT_VERSION}"
     testImplementation "org.mockito:mockito-core:${MOCKITO_VERSION}"
-    testImplementation "com.squareup.retrofit2:retrofit-mock:${RETROFIT_VERSION}"
     testImplementation "org.robolectric:robolectric:${ROBOLECTRIC_VERSION}"
+    testImplementation "androidx.test:core:${ANDROIDX_TEST_CORE}"
 }
 
 // build a jar with source files

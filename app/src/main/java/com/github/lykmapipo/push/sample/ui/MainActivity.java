@@ -41,7 +41,7 @@ public class MainActivity extends PushCompactActivity {
         Log.d(TAG, "Token:" + Push.getInstance().getRegistrationToken());
 
         //simulate force device sync
-        Button syncButton = (Button) findViewById(R.id.sync);
+        Button syncButton = findViewById(R.id.sync);
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

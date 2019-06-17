@@ -2,6 +2,8 @@ package com.github.lykmapipo.push;
 
 import android.content.Context;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.github.lykmapipo.push.api.Device;
 import com.google.firebase.FirebaseApp;
 
@@ -10,8 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowApplication;
 
 import java.util.Map;
 import java.util.Set;
@@ -23,11 +23,9 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * @author lally elias
- * @email lallyelias87@gmail.com, lally.elias@byteskode.com
+ * @author lally elias <lallyelias87@gmail.com>
  */
 
-@Config(sdk = 23)
 @RunWith(RobolectricTestRunner.class)
 public class PushTest {
     private Context context;
@@ -37,7 +35,7 @@ public class PushTest {
 
     @Before
     public void setup() {
-        context = ShadowApplication.getInstance().getApplicationContext();
+        context = ApplicationProvider.getApplicationContext();
         Push.initialize(context, apiBaseUrl, apiAuthorizationToken);
         FirebaseApp.initializeApp(context);
     }

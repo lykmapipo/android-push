@@ -12,8 +12,7 @@ import com.github.lykmapipo.push.PushTokenListener;
 /**
  * base push aware activity
  *
- * @author lally elias
- * @email lallyelias87@gmail.com
+ * @author lally elias <lallyelias87@gmail.com>
  * @date 11/01/16
  */
 public abstract class PushActivity extends Activity

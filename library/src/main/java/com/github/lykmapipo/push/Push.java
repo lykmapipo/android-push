@@ -4,8 +4,9 @@ package com.github.lykmapipo.push;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.github.lykmapipo.localburst.LocalBurst;
 import com.github.lykmapipo.preference.Preferences;
@@ -64,7 +65,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
     /**
      * key used to stoke latest fcm registration token
      */
-    private static final String REGISTRATION_TOKEN_PREF_KEY = "registrationToken";
+    public static final String REGISTRATION_TOKEN_PREF_KEY = "registrationToken";
 
 
     /**
@@ -169,6 +170,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * initialize new push instance
      *
      * @return {@link com.github.lykmapipo.push.Push}
+     * @deprecated
      */
     public static synchronized void initialize(
             @NonNull Context context, @NonNull String apiBaseUrl, @NonNull String apiAuthorizationToken) {
@@ -176,7 +178,33 @@ public class Push implements LocalBurst.OnBroadcastListener {
         if (instance == null) {
 
             //initialize preference
-            Preferences.initialize(context.getApplicationContext());
+            Preferences.create(context.getApplicationContext());
+
+            //instantiate new push
+            instance = new Push(context.getApplicationContext(), apiBaseUrl, apiAuthorizationToken);
+
+            //initialize local burst
+            LocalBurst localBurst =
+                    LocalBurst.initialize(context.getApplicationContext());
+            localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
+
+            //initialize
+            instance.init();
+        }
+    }
+
+    /**
+     * initialize new push instance
+     *
+     * @return {@link com.github.lykmapipo.push.Push}
+     */
+    public static synchronized void create(
+            @NonNull Context context, @NonNull String apiBaseUrl, @NonNull String apiAuthorizationToken) {
+
+        if (instance == null) {
+
+            //initialize preference
+            Preferences.create(context.getApplicationContext());
 
             //instantiate new push
             instance = new Push(context.getApplicationContext(), apiBaseUrl, apiAuthorizationToken);
@@ -315,21 +343,21 @@ public class Push implements LocalBurst.OnBroadcastListener {
             //register push message listener
             if (listener instanceof PushMessageListener) {
                 if (this.pushMessageListeners == null) {
-                    this.pushMessageListeners.remove((PushMessageListener) listener);
+                    this.pushMessageListeners.remove(listener);
                 }
             }
 
             //register push token listener
             if (listener instanceof PushTokenListener) {
                 if (this.pushTokenListeners == null) {
-                    this.pushTokenListeners.remove((PushTokenListener) listener);
+                    this.pushTokenListeners.remove(listener);
                 }
             }
 
             //register device sync listener
             if (listener instanceof DeviceSyncListener) {
                 if (this.deviceSyncListeners == null) {
-                    this.deviceSyncListeners.remove((DeviceSyncListener) listener);
+                    this.deviceSyncListeners.remove(listener);
                 }
             }
 
@@ -894,11 +922,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
             GoogleApiAvailability api = GoogleApiAvailability.getInstance();
             int status = api.isGooglePlayServicesAvailable(this.context);
 
-            if (status == ConnectionResult.SUCCESS) {
-                isGooglePlayServiceAvailable = true;
-            } else {
-                isGooglePlayServiceAvailable = false;
-            }
+            isGooglePlayServiceAvailable = status == ConnectionResult.SUCCESS;
         } catch (Exception e) {
             isGooglePlayServiceAvailable = false;
         }
@@ -1082,7 +1106,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
         //handle push message received
         if (action.equals(PUSH_MESSAGE_RECEIVED)) {
             //obtain remote message
-            RemoteMessage message = (RemoteMessage) extras.getParcelable(Push.MESSAGE);
+            RemoteMessage message = extras.getParcelable(Push.MESSAGE);
 
             if ((pushMessageListeners != null) && !pushMessageListeners.isEmpty()) {
                 for (PushMessageListener pushMessageListener : pushMessageListeners) {

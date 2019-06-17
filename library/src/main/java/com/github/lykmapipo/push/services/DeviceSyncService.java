@@ -3,20 +3,19 @@ package com.github.lykmapipo.push.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.github.lykmapipo.localburst.LocalBurst;
 import com.github.lykmapipo.push.Push;
 import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.receivers.NetworkChangeReceiver;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import retrofit2.Response;
 
 /**
  * sync device push details whenever network is become available
  *
- * @author lally elias
- * @email lallyelias87@gmail.com
+ * @author lally elias <lallyelias87@gmail.com>
  * @date 10/18/16
  */
 public class DeviceSyncService extends IntentService {
@@ -41,17 +40,18 @@ public class DeviceSyncService extends IntentService {
 
             //obtain push instance
             Push push = Push.getInstance();
+            boolean isConnected = push.isConnected();
 
             //obtain current registration token
             String currentRegistrationToken = push.getRegistrationToken();
 
             //obtain latest registration token from FirebaseInstanceId service
-            String latestRegistrationToken = FirebaseInstanceId.getInstance().getToken();
+            String latestRegistrationToken = intent.getStringExtra(Push.REGISTRATION_TOKEN_PREF_KEY);
 
             //check if token are different for updates
             boolean shouldUpdateServerToken = !currentRegistrationToken.equals(latestRegistrationToken);
 
-            if (shouldUpdateServerToken || forceSync) {
+            if (isConnected && (shouldUpdateServerToken || forceSync)) {
                 //save or update current device registration token
                 push.setRegistrationToken(latestRegistrationToken);
 
@@ -59,7 +59,7 @@ public class DeviceSyncService extends IntentService {
                 Response<Device> response;
 
                 //post device details
-                if (currentRegistrationToken.equals(null) || currentRegistrationToken.isEmpty()) {
+                if (TextUtils.isEmpty(currentRegistrationToken)) {
                     response = push.create(latestRegistrationToken);
                 }
 

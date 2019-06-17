@@ -2,8 +2,9 @@ package com.github.lykmapipo.push.ui;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.lykmapipo.push.DeviceSyncListener;
 import com.github.lykmapipo.push.Push;
@@ -13,8 +14,7 @@ import com.github.lykmapipo.push.PushTokenListener;
 /**
  * base push aware compact activity
  *
- * @author lally elias
- * @email lallyelias87@gmail.com
+ * @author lally elias <lallyelias87@gmail.com>
  * @date 11/01/16
  */
 public abstract class PushCompactActivity extends AppCompatActivity

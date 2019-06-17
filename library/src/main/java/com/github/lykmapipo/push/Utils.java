@@ -32,8 +32,7 @@ import java.util.TimeZone;
 /**
  * utils
  *
- * @author lally elias
- * @email lallyelias87@gmail.com
+ * @author lally elias <lallyelias87@gmail.com>
  */
 public class Utils {
 

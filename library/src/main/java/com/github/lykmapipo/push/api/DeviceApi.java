@@ -8,8 +8,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 
 /**
- * @author lally elias
- * @email lallyelias87@gmail.com
+ * @author lally elias <lallyelias87@gmail.com>
  * @date 10/17/16
  */
 public interface DeviceApi {

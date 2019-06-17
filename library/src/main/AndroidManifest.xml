@@ -13,23 +13,19 @@
         android:label="@string/app_name">
 
         <!-- start push message receiver service to listen for message events-->
-        <service android:name=".services.PushMessagingService">
+        <service
+            android:name=".services.PushMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- end push message receiver service to listen for message events-->
 
-        <!-- start push registration token manager service to listen for instance id events-->
-        <service android:name=".services.PushInstanceIdService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-        <!-- end push registration token manager service to listen for instance id events -->
-
         <!-- start sync push device details service-->
-        <service android:name=".services.DeviceSyncService" />
+        <service
+            android:name=".services.DeviceSyncService"
+            android:exported="false" />
         <!-- end sync push device details service-->
 
         <!-- start device boot broadcast receive to sync device details if not synced -->

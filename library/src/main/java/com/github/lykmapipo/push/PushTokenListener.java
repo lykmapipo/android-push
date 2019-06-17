@@ -3,8 +3,7 @@ package com.github.lykmapipo.push;
 import com.github.lykmapipo.push.api.Device;
 
 /**
- * @author lally elias
- * @email lallyelias87@gmail.com
+ * @author lally elias <lallyelias87@gmail.com>
  * @date 10/22/16
  */
 public interface PushTokenListener {
