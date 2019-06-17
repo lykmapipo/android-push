@@ -13,16 +13,15 @@ import com.github.lykmapipo.preference.Preferences;
 import com.github.lykmapipo.push.api.Device;
 import com.github.lykmapipo.push.api.DeviceApi;
 import com.github.lykmapipo.push.services.DeviceSyncService;
+import com.github.lykmapipo.retrofit.HttpService;
+import com.github.lykmapipo.retrofit.provider.AuthProvider;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,8 +29,6 @@ import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
@@ -96,9 +93,9 @@ public class Push implements LocalBurst.OnBroadcastListener {
     private String apiBaseUrl = "";
 
     /**
-     * server api authorization token
+     * server auth provider
      */
-    private String apiAuthorizationToken = "";
+    private AuthProvider authProvider;
 
 
     /**
@@ -148,10 +145,10 @@ public class Push implements LocalBurst.OnBroadcastListener {
      *
      * @param context
      */
-    private Push(Context context, String apiBaseUrl, String apiAuthorizationToken) {
+    private Push(Context context, String apiBaseUrl, AuthProvider authProvider) {
         this.context = context;
         this.apiBaseUrl = apiBaseUrl;
-        this.apiAuthorizationToken = apiAuthorizationToken;
+        this.authProvider = authProvider;
     }
 
 
@@ -173,7 +170,10 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @deprecated
      */
     public static synchronized void initialize(
-            @NonNull Context context, @NonNull String apiBaseUrl, @NonNull String apiAuthorizationToken) {
+            @NonNull Context context,
+            @NonNull String apiBaseUrl,
+            @NonNull String apiAuthorizationToken
+    ) {
 
         if (instance == null) {
 
@@ -181,11 +181,16 @@ public class Push implements LocalBurst.OnBroadcastListener {
             Preferences.create(context.getApplicationContext());
 
             //instantiate new push
-            instance = new Push(context.getApplicationContext(), apiBaseUrl, apiAuthorizationToken);
+            instance = new Push(context.getApplicationContext(), apiBaseUrl, new AuthProvider() {
+                @Override
+                public String getToken() {
+                    return apiAuthorizationToken;
+                }
+            });
 
             //initialize local burst
             LocalBurst localBurst =
-                    LocalBurst.initialize(context.getApplicationContext());
+                    LocalBurst.create(context.getApplicationContext());
             localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
 
             //initialize
@@ -199,7 +204,10 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * @return {@link com.github.lykmapipo.push.Push}
      */
     public static synchronized void create(
-            @NonNull Context context, @NonNull String apiBaseUrl, @NonNull String apiAuthorizationToken) {
+            @NonNull Context context,
+            @NonNull String apiBaseUrl,
+            @NonNull String apiAuthorizationToken
+    ) {
 
         if (instance == null) {
 
@@ -207,11 +215,45 @@ public class Push implements LocalBurst.OnBroadcastListener {
             Preferences.create(context.getApplicationContext());
 
             //instantiate new push
-            instance = new Push(context.getApplicationContext(), apiBaseUrl, apiAuthorizationToken);
+            instance = new Push(context.getApplicationContext(), apiBaseUrl, new AuthProvider() {
+                @Override
+                public String getToken() {
+                    return apiAuthorizationToken;
+                }
+            });
 
             //initialize local burst
             LocalBurst localBurst =
-                    LocalBurst.initialize(context.getApplicationContext());
+                    LocalBurst.create(context.getApplicationContext());
+            localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
+
+            //initialize
+            instance.init();
+        }
+    }
+
+    /**
+     * initialize new push instance
+     *
+     * @return {@link com.github.lykmapipo.push.Push}
+     */
+    public static synchronized void create(
+            @NonNull Context context,
+            @NonNull String apiBaseUrl,
+            @NonNull AuthProvider authProvider
+    ) {
+
+        if (instance == null) {
+
+            //initialize preference
+            Preferences.create(context.getApplicationContext());
+
+            //instantiate new push
+            instance = new Push(context.getApplicationContext(), apiBaseUrl, authProvider);
+
+            //initialize local burst
+            LocalBurst localBurst =
+                    LocalBurst.create(context.getApplicationContext());
             localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
 
             //initialize
@@ -250,21 +292,7 @@ public class Push implements LocalBurst.OnBroadcastListener {
 
         //initialize device server api endpoints
         if ((this.deviceApi == null) && (this.apiBaseUrl != null) && !this.apiBaseUrl.isEmpty()) {
-
-            //prepare gson convertor
-            Gson gson = new GsonBuilder()
-                    .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
-                    .excludeFieldsWithoutExposeAnnotation()
-                    .serializeNulls()
-                    .create();
-
-            //prepare retrofit device api endpoint client
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(this.apiBaseUrl)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-
-            deviceApi = retrofit.create(DeviceApi.class);
+            deviceApi = HttpService.create(DeviceApi.class, this.apiBaseUrl, this.authProvider);
         }
 
     }
@@ -820,11 +848,8 @@ public class Push implements LocalBurst.OnBroadcastListener {
             //prepare device
             Device device = getDevice(registrationToken);
 
-            //prepare authorization header value
-            String authorization = "Bearer " + this.apiAuthorizationToken;
-
             //call POST /devices
-            Call<Device> call = this.deviceApi.create(authorization, device);
+            Call<Device> call = this.deviceApi.create(device);
             Response<Device> response = call.execute();
             return response;
         } else {
@@ -855,11 +880,8 @@ public class Push implements LocalBurst.OnBroadcastListener {
             //prepare device
             Device device = getDevice(registrationToken);
 
-            //prepare authorization header value
-            String authorization = "Bearer " + this.apiAuthorizationToken;
-
             //call PUT /devices
-            Call<Device> call = this.deviceApi.update(authorization, device);
+            Call<Device> call = this.deviceApi.update(device);
             Response<Device> response = call.execute();
             return response;
         } else {

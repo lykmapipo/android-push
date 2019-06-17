@@ -13,8 +13,8 @@ android {
         consumerProguardFiles 'proguard-rules.pro'
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     testOptions {
@@ -37,6 +37,7 @@ dependencies {
     api "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
     api "com.github.lykmapipo:local-burst:${LOCALBURST_VERSION}"
     api "com.github.lykmapipo:android-preference:${ANDROID_PREFERENCE_VERSION}"
+    api "com.github.lykmapipo:retrofit-common:${RETROFIT_COMMON_VERSION}"
 
     // test dependencies
     testImplementation "junit:junit:${JUNIT_VERSION}"

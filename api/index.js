@@ -19,6 +19,9 @@ app.use(bodyParser.json());
  * register new device details received
  */
 app.post('/devices', (request, response) => {
+    // log sync time
+    console.log('POST Sync Time: ', new Date());
+
     //log headers
     console.log('POST Header: ', request.headers);
 
@@ -39,6 +42,9 @@ app.post('/devices', (request, response) => {
  * update existing device details received
  */
 app.put('/devices', (request, response) => {
+    // log sync time
+    console.log('PUT Sync Time: ', new Date());
+
     //log headers
     console.log('PUT Headers: ', request.headers);
 
