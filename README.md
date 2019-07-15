@@ -19,7 +19,7 @@ add `android-push` dependency into your project
 
 ```gradle
 dependencies {
-    compile 'com.github.lykmapipo:android-push:v0.13.0'
+    implementation 'com.github.lykmapipo:android-push:v0.13.1'
 }
 ```
 
@@ -35,7 +35,7 @@ public class SampleApp extends Application{
         super.onCreate();
 
         //initialize push
-        Push.initialize(<context>, <apiBaseUrl>, <apiAuthorizationToken>);
+        Push.create(<context>, <apiBaseUrl>, <apiAuthorizationToken>);
     }
 
 }
