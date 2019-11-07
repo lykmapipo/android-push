@@ -26,15 +26,23 @@ android {
 
 
 dependencies {
+    // local dependencies
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    // androidx dependencies
     api "androidx.annotation:annotation:${ANDROIDX_ANNOTATION_VERSION}"
     api "androidx.legacy:legacy-support-v4:${ANDROIDX_LEGACY_SUPPORT_VERSION}"
     api "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT_VERSION}"
+
+    // firebase dependencies
     api "com.google.android.gms:play-services-base:${PLAY_SERVICE_BASE_VERSION}"
     api "com.google.firebase:firebase-core:${FIREBASE_CORE_VERSION}"
     api "com.google.firebase:firebase-messaging:${FIREBASE_MESSAGING_VERSION}"
+
+    // misc dependencies
     api "com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}"
     api "com.squareup.retrofit2:converter-gson:${RETROFIT_VERSION}"
+    api "com.github.lykmapipo:android-common:${ANDROID_COMMON_VERSION}"
     api "com.github.lykmapipo:local-burst:${LOCALBURST_VERSION}"
     api "com.github.lykmapipo:android-preference:${ANDROID_PREFERENCE_VERSION}"
     api "com.github.lykmapipo:retrofit-common:${RETROFIT_COMMON_VERSION}"

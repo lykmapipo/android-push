@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.github.lykmapipo.common.provider.Provider;
 import com.github.lykmapipo.localburst.LocalBurst;
 import com.github.lykmapipo.preference.Preferences;
 import com.github.lykmapipo.push.api.Device;
@@ -167,93 +168,23 @@ public class Push implements LocalBurst.OnBroadcastListener {
      * initialize new push instance
      *
      * @return {@link com.github.lykmapipo.push.Push}
-     * @deprecated
      */
-    public static synchronized void initialize(
-            @NonNull Context context,
+    public static synchronized void of(
             @NonNull String apiBaseUrl,
-            @NonNull String apiAuthorizationToken
-    ) {
-
-        if (instance == null) {
-
-            //initialize preference
-            Preferences.create(context.getApplicationContext());
-
-            //instantiate new push
-            instance = new Push(context.getApplicationContext(), apiBaseUrl, new AuthProvider() {
-                @Override
-                public String getToken() {
-                    return apiAuthorizationToken;
-                }
-            });
-
-            //initialize local burst
-            LocalBurst localBurst =
-                    LocalBurst.create(context.getApplicationContext());
-            localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
-
-            //initialize
-            instance.init();
-        }
-    }
-
-    /**
-     * initialize new push instance
-     *
-     * @return {@link com.github.lykmapipo.push.Push}
-     */
-    public static synchronized void create(
-            @NonNull Context context,
-            @NonNull String apiBaseUrl,
-            @NonNull String apiAuthorizationToken
-    ) {
-
-        if (instance == null) {
-
-            //initialize preference
-            Preferences.create(context.getApplicationContext());
-
-            //instantiate new push
-            instance = new Push(context.getApplicationContext(), apiBaseUrl, new AuthProvider() {
-                @Override
-                public String getToken() {
-                    return apiAuthorizationToken;
-                }
-            });
-
-            //initialize local burst
-            LocalBurst localBurst =
-                    LocalBurst.create(context.getApplicationContext());
-            localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
-
-            //initialize
-            instance.init();
-        }
-    }
-
-    /**
-     * initialize new push instance
-     *
-     * @return {@link com.github.lykmapipo.push.Push}
-     */
-    public static synchronized void create(
-            @NonNull Context context,
-            @NonNull String apiBaseUrl,
+            @NonNull Provider provider,
             @NonNull AuthProvider authProvider
     ) {
 
         if (instance == null) {
 
             //initialize preference
-            Preferences.create(context.getApplicationContext());
+            Preferences.of(provider);
 
             //instantiate new push
-            instance = new Push(context.getApplicationContext(), apiBaseUrl, authProvider);
+            instance = new Push(provider.getApplicationContext(), apiBaseUrl, authProvider);
 
             //initialize local burst
-            LocalBurst localBurst =
-                    LocalBurst.create(context.getApplicationContext());
+            LocalBurst localBurst = LocalBurst.of(provider);
             localBurst.on(instance, REGISTRATION_TOKEN_REFRESHED, PUSH_MESSAGE_RECEIVED, DEVICE_SYNCED);
 
             //initialize

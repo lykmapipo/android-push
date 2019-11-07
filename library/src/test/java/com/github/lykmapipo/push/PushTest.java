@@ -2,9 +2,12 @@ package com.github.lykmapipo.push;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 
+import com.github.lykmapipo.common.provider.Provider;
 import com.github.lykmapipo.push.api.Device;
+import com.github.lykmapipo.retrofit.provider.AuthProvider;
 import com.google.firebase.FirebaseApp;
 
 import org.junit.After;
@@ -36,7 +39,18 @@ public class PushTest {
     @Before
     public void setup() {
         context = ApplicationProvider.getApplicationContext();
-        Push.initialize(context, apiBaseUrl, apiAuthorizationToken);
+        Push.of(apiBaseUrl, new Provider() {
+            @NonNull
+            @Override
+            public Context getApplicationContext() {
+                return ApplicationProvider.getApplicationContext();
+            }
+        }, new AuthProvider() {
+            @Override
+            public String getToken() {
+                return apiAuthorizationToken;
+            }
+        });
         FirebaseApp.initializeApp(context);
     }
 
