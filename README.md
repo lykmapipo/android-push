@@ -19,7 +19,7 @@ add `android-push` dependency into your project
 
 ```gradle
 dependencies {
-    implementation 'com.github.lykmapipo:android-push:v0.13.1'
+    implementation 'com.github.lykmapipo:android-push:v0.14.0'
 }
 ```
 
@@ -28,16 +28,24 @@ dependencies {
 Initialize `android-push`
 
 ```java
-public class SampleApp extends Application{
-
+public class SampleApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
 
-        //initialize push
-        Push.create(<context>, <apiBaseUrl>, <apiAuthorizationToken>);
+        Push.of(apiBaseUrl, new Provider() {
+            @NonNull
+            @Override
+            public Context getApplicationContext() {
+                return SampleApp.this.getApplicationContext();
+            }
+        }, new AuthProvider() {
+            @Override
+            public String getToken() {
+                return apiKey;
+            }
+        });
     }
-
 }
 ```
 
@@ -150,7 +158,7 @@ Do not forget to add a bit of test(s) of what value you adding.
 
 (The MIT License)
 
-Copyright (c) 2016 lykmapipo && Contributors
+Copyright (c) lykmapipo && Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

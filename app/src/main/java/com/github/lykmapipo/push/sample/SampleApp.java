@@ -18,7 +18,6 @@ public class SampleApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        //TODO deploy sample api to heroku
         Push.of("http://192.168.43.78:3000", new Provider() {
             @NonNull
             @Override
