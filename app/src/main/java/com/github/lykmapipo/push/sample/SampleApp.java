@@ -14,6 +14,6 @@ public class SampleApp extends Application {
         super.onCreate();
 
         //TODO deploy sample api to heroku
-        Push.create(this, "http://192.168.43.151:3000", "SHOZZEKSJT");
+        Push.create(this, "http://192.168.43.78:3000", "SHOZZEKSJT");
     }
 }
